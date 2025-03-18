@@ -1,7 +1,5 @@
 import { FunctionComponent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import Link from 'next/link'
-
 import {
     Layout,
     Filters,
@@ -9,18 +7,18 @@ import {
     resourceItems,
     Resource,
     ContentSection,
+    CodyCta,
     useFilters,
-    CallToActionWithCody,
-    Heading,
     SearchInput,
 } from '../components'
-import { EventName, getEventLogger } from '../hooks/eventLogger'
+import { BentoWithMockup } from '../components/bentoWithMockup'
+import { TelemetryProps } from '../telemetry'
 
 const sortResources = (resources: Resource[]): Resource[] =>
     resources.sort((a, b) => new Date(b.publishDate).valueOf() - new Date(a.publishDate).valueOf())
 
-const Resources: FunctionComponent = () => {
-    const { filterGroups, setFilter, resetFilterGroup, resetFilterGroups } = useFilters()
+const Resources: FunctionComponent<TelemetryProps> = ({ telemetryRecorder }) => {
+    const { filterGroups, setFilter, resetFilterGroup, resetFilterGroups } = useFilters({ telemetryRecorder })
     const [searchTerm, setSearchTerm] = useState<string>('')
     const [filteredResources, setFilteredResources] = useState<Resource[]>([])
 
@@ -121,23 +119,21 @@ const Resources: FunctionComponent = () => {
 
     const handlerResourceItemClick = (resource: Resource, isFeatured?: boolean): void => {
         const { title, contentType, description } = resource
-        const eventArguments = {
-            title,
-            description,
-            contentType,
-        }
-        const eventName = isFeatured ? EventName.RESOURCE_FEATURED_ITEM_CLICK : EventName.RESOURCE_ITEM_CLICK
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        getEventLogger().log(eventName, eventArguments, eventArguments)
+        telemetryRecorder.recordEvent(`resources.${isFeatured ? 'featuredItem' : 'item'}`, 'click', {
+            privateMetadata: {
+                title,
+                description,
+                contentType,
+            },
+        })
     }
 
     useEffect(() => {
         if (!resourcesToDisplay.length) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            getEventLogger().log(EventName.EMPTY_RESOURCE_SEARCH_RESULT, { searchTerm }, { searchTerm })
+            telemetryRecorder.recordEvent('resources.filter.emptyResults', 'view', { privateMetadata: { searchTerm } })
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [resourcesToDisplay.length])
+    }, [resourcesToDisplay.length, telemetryRecorder])
 
     useEffect(() => {
         // Scroll the last resource item into view if display limit is reduced
@@ -155,48 +151,56 @@ const Resources: FunctionComponent = () => {
                 description: 'Sourcegraph workshops, case studies, whitepapers, blog posts, and recorded events',
             }}
             heroAndHeaderClassName="sg-resource-hero"
-            headerColorTheme="purple"
+            headerColorTheme="dark"
             hero={
-                <ContentSection
-                    parentClassName="relative !pt-0"
-                    className="pt-[72px] pb-[70px] text-center text-white md:pb-[30px]"
-                >
-                    <Heading size="h1" className="pb-6 text-white">
-                        Resources
-                    </Heading>
-                    <p className="mb-[101px] text-[18px] md:mb-[70px] md:text-[30px]">
-                        Videos, guides, customer stories, and more
-                    </p>
+                <ContentSection parentClassName="relative !pt-0" className="pt-[72px] text-center text-white">
+                    <h1 className="pb-6 text-white">Resources</h1>
+                    <p className="text-[18px] md:text-[30px]">Videos, guides, customer stories, and more</p>
                 </ContentSection>
             }
         >
-            <ContentSection background="white" parentClassName="bg-gray-50 !py-0">
-                <div className="relative -top-[107px] -mb-[43px] -mt-[70px] flex max-w-[1280px] flex-col justify-between md:gap-x-[144px] rounded-md border border-gray-500 bg-white px-[23px] py-[31px] shadow-sm md:-top-[84px] md:-mb-[84px] lg:flex-row lg:px-[79px] lg:py-[63px]">
-                    <div className="flex flex-col items-center justify-center lg:items-start flex-shrink-0">
+            <div className="mx-auto mb-20 max-w-screen-xl !px-6 xl:!px-0">
+                <BentoWithMockup
+                    isVariantStyle={true}
+                    label="Guide"
+                    customTitle="The ultimate Buyer’s Guide for AI coding tools"
+                    imgSrc="/assets/resources/guideMockup.svg"
+                    href="/guides/code-ai-buyers-guide?form_submission_source=code-ai-buyers-guide"
+                    hrefLabel="Get your free copy"
+                />
+            </div>
+
+            {/* <ContentSection background="white" parentClassName="bg-gray-50 !pb-0">
+                <div className="relative -top-[107px] -mb-[43px] -mt-[70px] flex max-w-[1280px] flex-col justify-between rounded-md border border-gray-500 bg-white px-[23px] py-[31px] shadow-sm md:-top-[84px] md:-mb-[84px] md:gap-x-[144px] lg:flex-row lg:px-[79px] lg:py-[63px]">
+                    <div className="flex flex-shrink-0 flex-col items-center justify-center lg:items-start">
                         <p className="pb-1 text-center font-mono font-[500] capitalize lg:text-left">
                             {featuredResource.contentType}
                         </p>
-                        <Heading size="h2" className="mb-8 text-center !text-4xl md:mb-4 lg:text-left">
-                            {featuredResource.title}
-                        </Heading>
+                        <h2 className="mb-8 text-center md:mb-4 lg:text-left">{featuredResource.title}</h2>
                         <Link
                             href={featuredResource.link}
-                            className="hidden rounded-[5px] border border-violet-500 px-6 py-2 text-center font-semibold text-violet-500 hover:border-violet-400 hover:text-violet-400 lg:block"
+                            className="btn btn-primary hidden px-6 py-2 text-center font-semibold lg:block"
                         >{`Read the ${featuredResource.contentType}`}</Link>
                     </div>
                     <div className="flex justify-center lg:justify-end">
-                        <img className="rounded-lg w-full md:max-w-[700px]" src="/big-code.png" alt="Featured resource" width="2400" height="1350" />
+                        <img
+                            className="w-full rounded-lg md:max-w-[700px]"
+                            src="/big-code.png"
+                            alt="Featured resource"
+                            width="2400"
+                            height="1350"
+                        />
                     </div>
                     <Link
                         href={featuredResource.link}
                         onClick={() => handlerResourceItemClick(featuredResource, true)}
-                        className="mx-auto mt-8 w-fit rounded-[5px] border border-violet-500 px-6 py-2 text-center font-semibold text-violet-500 hover:border-violet-400 hover:text-violet-400 lg:hidden"
+                        className="btn btn-secondary mx-auto mt-8 w-fit px-6 py-2 text-center font-semibold lg:hidden"
                     >{`Read the ${featuredResource.contentType}`}</Link>
                 </div>
-            </ContentSection>
+            </ContentSection> */}
 
             <ContentSection
-                parentClassName="bg-gray-50 !pt-0"
+                parentClassName="bg-gray-50 !pt-5"
                 className="grid grid-cols-1 pb-4 md:mt-16 md:grid-cols-3 md:gap-x-[20px]"
             >
                 <div className="w-full md:max-w-[371px]">
@@ -215,8 +219,8 @@ const Resources: FunctionComponent = () => {
 
                 <div className="col-span-2">
                     {noResults || !resourcesToDisplay.length ? (
-                        <div className="col-span-2 mx-auto mb-3xl text-center">
-                            <span className="mb-xxs inline-flex h-md w-md items-center justify-center rounded-full bg-white p-1">
+                        <div className="col-span-2 mx-auto mb-16 text-center">
+                            <span className="mb-2 inline-flex h-8 w-8 items-center justify-center rounded-full bg-white p-1">
                                 &#128534;
                             </span>
                             <h4>There are no items that match your search criteria.</h4>
@@ -238,7 +242,7 @@ const Resources: FunctionComponent = () => {
                         {displayLimit > 6 && filteredResources.length > 6 && (
                             <button
                                 type="button"
-                                className="rounded-[5px] bg-violet-500 px-6 py-2  text-base font-semibold text-white hover:bg-violet-400"
+                                className="btn btn-primary px-6 py-2 text-base font-semibold"
                                 onClick={() => handleShowLess()}
                             >
                                 Show Less
@@ -247,7 +251,7 @@ const Resources: FunctionComponent = () => {
                         {displayLimit < resources.length && (
                             <button
                                 type="button"
-                                className="rounded-[5px] bg-violet-500 px-6 py-2  text-base font-semibold text-white hover:bg-violet-400"
+                                className="btn btn-primary px-6 py-2 text-base font-semibold"
                                 onClick={handleShowMore}
                             >
                                 Show More
@@ -256,8 +260,7 @@ const Resources: FunctionComponent = () => {
                     </div>
                 </div>
             </ContentSection>
-
-            <CallToActionWithCody />
+            <CodyCta source="Resources Page" />
         </Layout>
     )
 }

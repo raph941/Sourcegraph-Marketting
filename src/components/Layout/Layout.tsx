@@ -17,8 +17,9 @@ interface LayoutProps {
         videoID?: string
         icon?: string
         canonical?: string
+        noindex?: boolean
     }
-    children: ReactNode
+    children?: ReactNode
     minimal?: boolean
 
     hero?: ReactNode
@@ -30,9 +31,17 @@ interface LayoutProps {
     className?: string
     hideFooter?: boolean
     hideHeader?: boolean
+    customFooterClassName?: string
+    customDark?: boolean
 }
 
-export const Layout: FunctionComponent<LayoutProps> = ({ headerColorTheme, className, ...props }) => {
+export const Layout: FunctionComponent<LayoutProps> = ({
+    headerColorTheme,
+    className,
+    customFooterClassName,
+    customDark = true,
+    ...props
+}) => {
     const navRef = useRef<HTMLElement>(null)
     const router = useRouter()
     const { pathname, asPath } = router
@@ -45,8 +54,8 @@ export const Layout: FunctionComponent<LayoutProps> = ({ headerColorTheme, class
         description:
             props.meta?.description ||
             'Find and fix things across all of your code with Sourcegraph universal code search.',
-        image: props.meta?.image || 'https://about.sourcegraph.com/sourcegraph-universal-og.png',
-        icon: props.meta?.icon || 'https://about.sourcegraph.com/favicon.png',
+        image: props.meta?.image || 'https://sourcegraph.com/assets/resources/sourcegraph-default-og.png',
+        icon: props.meta?.icon || 'https://sourcegraph.com/favicon.png',
     }
 
     const videoMeta = {
@@ -60,16 +69,31 @@ export const Layout: FunctionComponent<LayoutProps> = ({ headerColorTheme, class
         videoMeta.watchURL = `https://www.youtube.com/v/${meta.videoID}`
     }
 
+    // canonical
+    // always set about.sourcegraph.com to sourcegraph.com
+    // if the canonical is set as a prop, just replace about.sourcegraph.com with sourcegraph.com
+    // if no canonical is set, use the current url without url params
+    let canonical: string | undefined = 'https://sourcegraph.com' + asPath
+
+    if (props.meta?.canonical) {
+        canonical = props.meta?.canonical?.replace('about.sourcegraph.com', 'sourcegraph.com')
+    }
+
     return (
         <div className={`flex min-h-screen flex-col ${className || ''}`}>
             <Head>
                 <title>{meta.externalTitle || meta.title}</title>
                 <meta name="description" content={meta.externalDescription || meta.description} />
 
+                {/* Add this conditional rendering for noindex */}
+                {meta.noindex && <meta name="robots" content="noindex, nofollow" />}
+
                 <meta name="twitter:title" content={meta.title} />
                 <meta name="twitter:site" content="@sourcegraph" />
                 <meta name="twitter:description" content={meta.description} />
                 <meta name="twitter:creator" content="@sourcegraph" />
+
+                <meta name="google-site-verification" content="wZHQLmMyQgFVR6sIrtrIrfd2uHkK-PDifTfYBEtsWrs" />
 
                 {meta.videoID ? (
                     <>
@@ -97,7 +121,7 @@ export const Layout: FunctionComponent<LayoutProps> = ({ headerColorTheme, class
                     </>
                 )}
 
-                <meta property="og:url" content={`https://about.sourcegraph.com${asPath}`} />
+                <meta property="og:url" content={`https://sourcegraph.com${asPath}`} />
                 <meta property="og:title" content={meta.title} />
                 <meta property="og:description" content={meta.description} />
                 <meta property="og:type" content={isArticle ? 'article' : 'website'} />
@@ -105,13 +129,13 @@ export const Layout: FunctionComponent<LayoutProps> = ({ headerColorTheme, class
 
                 <link rel="icon" type="image/png" href={meta.icon} />
 
-                {meta.canonical ? <link rel="canonical" href={meta.canonical} /> : ''}
+                {canonical && <link rel="canonical" href={canonical} />}
             </Head>
 
             {!props.hideHeader && (
                 <div className={classNames(props.heroAndHeaderClassName, 'pt-[147px] md:pt-[116px]')}>
                     <Header minimal={props.minimal} colorTheme={headerColorTheme || 'white'} navRef={navRef} />
-
+                    
                     {props.hero}
                 </div>
             )}
@@ -119,19 +143,24 @@ export const Layout: FunctionComponent<LayoutProps> = ({ headerColorTheme, class
                 headerColorTheme === 'purple'
                     ? 'var(--sg-color-violet-750)'
                     : headerColorTheme === 'dark'
-                    ? 'black'
+                    ? 'var(--sg-color-gray-800)'
                     : 'white'
             }; }`}</style>
-            <section
-                className={classNames('flex-1', props.childrenClassName, {
-                    '-mt-[68px] pt-5xl md:-mt-[74px] md:!pt-[148px]': props.displayChildrenUnderNav,
-                })}
-            >
-                {props.children}
-            </section>
-
+            {props.children && (
+                <section
+                    className={classNames('flex-1', props.childrenClassName, {
+                        '-mt-[68px] pt-24 md:-mt-[74px] md:!pt-[148px]': props.displayChildrenUnderNav,
+                    })}
+                >
+                    {props.children}
+                </section>
+            )}
             {!props.hideFooter && (
-                <Footer dark={headerColorTheme === 'dark' || headerColorTheme === 'purple'} minimal={props.minimal} />
+                <Footer
+                    className={customFooterClassName}
+                    dark={headerColorTheme === 'dark' || (headerColorTheme === 'purple' && customDark)}
+                    minimal={props.minimal}
+                />
             )}
         </div>
     )

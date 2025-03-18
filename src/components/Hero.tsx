@@ -13,8 +13,10 @@ interface Hero extends Background {
     product?: 'code search' | 'batch changes' | 'code insights' | 'sourcegraph cloud'
     title: string | ReactNode
     titleClassName?: string
+    subtitleClassName?: string
     backButton?: BackButton
     leftColumn?: ReactNode
+    rightColumn?: ReactNode
     subtitle?: string
     description?: string
     cta?: ReactNode
@@ -23,13 +25,21 @@ interface Hero extends Background {
     mergeColumns?: boolean
     centerContent?: boolean
     className?: string
+    productUpperCase?: boolean
+    columnClassName?: string
+    contentSectionClassName?: string
+    rightColumnClassName?: string
 }
 
 export const Hero: FunctionComponent<Omit<Hero, 'children' | 'illustration'>> = ({
     variant,
     product,
+    productUpperCase,
     title,
     titleClassName,
+    columnClassName,
+    subtitleClassName,
+    contentSectionClassName,
     backButton,
     leftColumn,
     description,
@@ -40,6 +50,8 @@ export const Hero: FunctionComponent<Omit<Hero, 'children' | 'illustration'>> = 
     mergeColumns = false,
     centerContent = false,
     className,
+    rightColumn,
+    rightColumnClassName,
 }) => {
     let illustration: Background['illustration']
     if (product && product !== 'sourcegraph cloud') {
@@ -55,20 +67,41 @@ export const Hero: FunctionComponent<Omit<Hero, 'children' | 'illustration'>> = 
         >
             {backButton && <BackButton href={backButton.link} text={backButton.text} />}
 
-            <div className="flex flex-col-reverse">
-                <h1 className={classNames(titleClassName, 'whitespace-pre-line', { 'text-center mx-auto': centerContent })}>{title}</h1>
-                {product && <h6 className={classNames('mb-2', { 'text-center mx-auto': centerContent })}>{product}</h6>}
+            <div className={classNames('flex flex-col-reverse', rightColumnClassName)}>
+                <h1
+                    className={classNames(titleClassName, 'whitespace-pre-line', {
+                        'mx-auto text-center': centerContent,
+                    })}
+                >
+                    {title}
+                </h1>
+                {product && (
+                    <h6
+                        className={classNames('mb-2', {
+                            'mx-auto text-center': centerContent,
+                            'uppercase text-gray-700': productUpperCase,
+                        })}
+                    >
+                        {product}
+                    </h6>
+                )}
             </div>
 
-            {description && <p className="mt-sm max-w-xl text-lg">{description}</p>}
+            {description && <p className="mt-6 max-w-xl text-lg">{description}</p>}
 
             {subtitle && (
-                <h3 className={classNames('mt-sm max-w-4xl', { 'text-center mx-auto': centerContent })}>{subtitle}</h3>
+                <h3
+                    className={classNames(subtitleClassName, 'mt-6 max-w-4xl', {
+                        'mx-auto text-center': centerContent,
+                    })}
+                >
+                    {subtitle}
+                </h3>
             )}
 
             {cta && (
                 <div
-                    className={classNames('mt-md flex flex-col', {
+                    className={classNames('mt-8 flex flex-col', {
                         'mx-auto items-center': centerContent,
                     })}
                 >
@@ -91,16 +124,23 @@ export const Hero: FunctionComponent<Omit<Hero, 'children' | 'illustration'>> = 
             background={variant}
             illustration={illustration}
             parentClassName={classNames(className, {
-                '-mt-[68px] md:-mt-[74px] pt-5xl md:!pt-[148px]': displayUnderNav,
-                'relative md:h-[750px] lg:mb-xs md:mb-4xl mb-0': floatingImg,
+                '-mt-[68px] md:-mt-[52px] pt-24 md:!pt-[148px]': displayUnderNav,
+                'relative md:h-[750px] lg:mb-4 md:mb-16 mb-0': floatingImg,
             })}
-            className="flex items-center"
+            className={classNames('flex items-center', contentSectionClassName)}
         >
-            {leftColumn ? (
+            {leftColumn && (
                 <TwoColumnSection leftColumn={leftColumn} rightColumn={mainContent} mergeColumns={mergeColumns} />
-            ) : (
-                mainContent
             )}
+            {rightColumn && (
+                <TwoColumnSection
+                    leftColumn={mainContent}
+                    rightColumn={rightColumn}
+                    mergeColumns={mergeColumns}
+                    className={columnClassName}
+                />
+            )}
+            {!leftColumn && !rightColumn && mainContent}
         </ContentSection>
     )
 }

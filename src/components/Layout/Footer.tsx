@@ -1,16 +1,18 @@
-import React, { useMemo } from 'react'
+import { useMemo, FunctionComponent, ReactSVG } from 'react'
 
 import classNames from 'classnames'
+import { ExternalLink } from 'lucide-react'
 import GithubIcon from 'mdi-react/GithubIcon'
 import LinkedinIcon from 'mdi-react/LinkedinIcon'
-import SpotifyIcon from 'mdi-react/SpotifyIcon'
-import TwitterIcon from 'mdi-react/TwitterIcon'
 import YouTubeIcon from 'mdi-react/YoutubeIcon'
 import Link from 'next/link'
 import { FaDiscord as DiscordIcon } from 'react-icons/fa'
 
-import { Badge, Heading } from '..'
-import { buttonStyle, buttonLocation } from '../../data/tracking'
+import { Badge } from '..'
+import { buttonLocation, buttonStyle } from '../../data/tracking'
+import { Icon } from '../icon'
+
+const ExternalLinkIcon: FunctionComponent = () => <ExternalLink className="h-3 w-3" />
 
 interface Link {
     name: string
@@ -19,7 +21,7 @@ interface Link {
 }
 
 interface LinkWithIcon extends Link {
-    icon?: React.ComponentType<{ className?: string }>
+    icon?: JSX.Element
 }
 
 const FOOTER_LINK_SECTIONS: { name: string; items: LinkWithIcon[] }[] = [
@@ -27,29 +29,37 @@ const FOOTER_LINK_SECTIONS: { name: string; items: LinkWithIcon[] }[] = [
         name: 'Products',
         items: [
             {
-                name: 'Cody (beta)',
+                name: 'Cody',
                 href: '/cody',
             },
             {
                 name: 'Code Search',
                 href: '/code-search',
             },
+            {
+                name: 'OpenCtx',
+                href: 'https://openctx.org/docs/clients/sourcegraph',
+            },
         ],
     },
     {
-        name: 'Enterprise',
+        name: 'Solutions',
         items: [
             {
-                name: 'Cloud',
-                href: '/cloud',
+                name: 'Enterprise',
+                href: '/enterprise',
             },
             {
-                name: 'Pricing',
-                href: '/pricing',
+                name: 'Batch Changes',
+                href: '/batch-changes',
             },
             {
-                name: 'Customer stories',
-                href: '/case-studies',
+                name: 'Code Insights',
+                href: '/code-insights',
+            },
+            {
+                name: 'Unit testing',
+                href: '/solutions/build-unit-tests',
             },
         ],
     },
@@ -57,34 +67,54 @@ const FOOTER_LINK_SECTIONS: { name: string; items: LinkWithIcon[] }[] = [
         name: 'Resources',
         items: [
             {
-                name: 'Blog',
-                href: '/blog',
-            },
-            {
-                name: 'Library',
-                href: '/resources',
-            },
-            {
-                name: 'Changelog',
-                href: 'https://sourcegraph.com/github.com/sourcegraph/sourcegraph/-/blob/CHANGELOG.md',
-            },
-            {
                 name: 'Documentation',
                 href: 'https://docs.sourcegraph.com',
             },
             {
-                name: 'Podcast',
-                href: '/podcast',
+                name: 'Resource library',
+                href: '/resources',
+            },
+            {
+                name: 'Blog',
+                href: '/blog',
+            },
+            {
+                name: 'Changelog',
+                href: '/changelog',
             },
             {
                 name: 'Community',
                 href: '/community',
+            },
+            {
+                name: 'Cody comparisons',
+                href: '/compare',
+            },
+            {
+                name: 'Customer stories',
+                href: '/case-studies',
+            },
+            {
+                name: 'Search public code',
+                href: '/search',
+            },
+            {
+                name: 'Support forum',
+                href: 'https://community.sourcegraph.com',
+            },
+            {
+                name: 'Sourcegraph Labs',
+                href: 'https://s0.dev',
             },
         ],
     },
     {
         name: 'Company',
         items: [
+            {
+                name: 'Pricing',
+                href: '/pricing',
+            },
             {
                 name: 'About',
                 href: '/about',
@@ -101,44 +131,42 @@ const FOOTER_LINK_SECTIONS: { name: string; items: LinkWithIcon[] }[] = [
                 name: 'Handbook',
                 href: 'https://handbook.sourcegraph.com',
             },
-            {
-                name: 'Sourcegraph strategy',
-                href: 'https://handbook.sourcegraph.com/company/strategy',
-            },
         ],
     },
 ]
 
-const SOCIAL_LINKS: LinkWithIcon[] = [
+const getSocialLinks = (dark: boolean): LinkWithIcon[] => [
     {
         name: 'GitHub',
         href: 'https://github.com/sourcegraph',
-        icon: GithubIcon,
+        icon: <GithubIcon className="h-[24px] w-[24px]" />,
     },
     {
         name: 'Twitter',
         href: 'https://twitter.com/sourcegraph',
-        icon: TwitterIcon,
+        icon: (
+            <Icon
+                fill="currentColor"
+                color="none"
+                className={classNames('', dark ? 'text-gray-200 hover:text-white' : 'text-gray-400 hover:text-black')}
+                iconNode={twitterIconDefinition}
+            />
+        ),
     },
     {
         name: 'Discord',
         href: 'https://discord.gg/s2qDtYGnAE',
-        icon: DiscordIcon,
+        icon: <DiscordIcon className="h-[24px] w-[24px]" />,
     },
     {
         name: 'LinkedIn',
         href: 'https://www.linkedin.com/company/4803356/',
-        icon: LinkedinIcon,
+        icon: <LinkedinIcon className="h-[24px] w-[24px]" />,
     },
     {
         name: 'YouTube',
         href: 'https://www.youtube.com/c/Sourcegraph/featured',
-        icon: YouTubeIcon,
-    },
-    {
-        name: 'Spotify',
-        href: 'https://open.spotify.com/user/p3ntuomfda8r7czdbsgy36ogk?si=8095204aefc24587',
-        icon: SpotifyIcon,
+        icon: <YouTubeIcon className="h-[24px] w-[24px]" />,
     },
 ]
 
@@ -163,21 +191,32 @@ interface Props {
     className?: string
 }
 
+const twitterIconDefinition: [keyof ReactSVG, Record<string, string>][] = [
+    ['svg', { viewBox: '0 0', fill: 'currentColor' }],
+    [
+        'path',
+        {
+            d: 'M18.2439 2.25H21.5519L14.3249 10.51L22.8269 21.75H16.1699L10.9559 14.933L4.98991 21.75H1.67991L9.40991 12.915L1.25391 2.25H8.07991L12.7929 8.481L18.2439 2.25ZM17.0829 19.77H18.9159L7.08391 4.126H5.11691L17.0829 19.77Z',
+        },
+    ],
+]
+
 export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, className }) => {
     const year = useMemo(() => new Date().getFullYear(), [])
+    const socialLinks = useMemo(() => getSocialLinks(!!dark), [dark])
     return (
         <footer
             className={classNames(
                 className,
                 !minimal && 'pt-16 pb-2',
-                dark ? 'bg-black text-white' : 'bg-gray-50 text-black',
+                dark ? 'bg-gray-800 text-gray-50' : 'bg-gray-50 text-gray-800',
                 'z-10'
             )}
         >
             <div className="mx-auto max-w-screen-xl px-4">
                 {!minimal && (
                     <div className="mb-8 flex flex-col-reverse sm:grid sm:grid-cols-12">
-                        <div className="col-span-12 mt-xl sm:mt-0 sm:mb-sm lg:col-span-4 lg:mb-0">
+                        <div className="col-span-12 mt-12 sm:mt-0 sm:mb-6 lg:col-span-4 lg:mb-0">
                             <Link
                                 href="/"
                                 title="Sourcegraph - Universal code search"
@@ -196,7 +235,7 @@ export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, classNam
                             </Link>
 
                             <ul className="mx-0 mt-3 flex list-none">
-                                {SOCIAL_LINKS.map(({ name, href, icon: Icon }) => (
+                                {socialLinks.map(({ name, href, icon: Icon }) => (
                                     <li className="mr-5" key={name}>
                                         <a
                                             href={href}
@@ -210,11 +249,11 @@ export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, classNam
                                             className={classNames(
                                                 'mr-3',
                                                 dark
-                                                    ? 'text-gray-300 hover:text-white'
+                                                    ? 'text-gray-200 hover:text-white'
                                                     : 'text-gray-400 hover:text-black'
                                             )}
                                         >
-                                            {Icon && <Icon className="h-[24px] w-[24px]" />}
+                                            {Icon}
                                         </a>
                                     </li>
                                 ))}
@@ -223,13 +262,11 @@ export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, classNam
 
                         <div className="col-span-12 sm:grid sm:grid-cols-12 lg:col-span-8">
                             {FOOTER_LINK_SECTIONS.map(({ name, items }) => (
-                                <div className="mb-md sm:col-span-3 sm:mb-0" key={name}>
-                                    <Heading size="h5" as="h2" className="mb-xs text-base">
-                                        {name}
-                                    </Heading>
+                                <div className="mb-8 sm:col-span-3 sm:mb-0" key={name}>
+                                    <h5 className="mb-4">{name}</h5>
                                     <ul className="ml-0 list-none">
                                         {items.map(({ name, href, icon: Icon, badgeText }) => (
-                                            <li className="mb-xs max-w-[176px]" key={name}>
+                                            <li className="mb-4 max-w-[176px]" key={name}>
                                                 <Link
                                                     href={href}
                                                     title={name}
@@ -237,14 +274,14 @@ export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, classNam
                                                     data-button-location={buttonLocation.footer}
                                                     data-button-type="cta"
                                                     className={classNames(
-                                                        'font-medium',
+                                                        'flex items-center  gap-2 text-sm font-normal',
                                                         dark
                                                             ? 'text-gray-100 hover:text-white'
                                                             : 'text-gray-500 hover:text-black'
                                                     )}
                                                 >
-                                                    {Icon && <Icon className="mr-1 inline w-[20px] opacity-50" />}
                                                     {name}
+                                                    {Icon}
                                                     {badgeText && (
                                                         <Badge className="ml-4" size="small" text={badgeText} />
                                                     )}
@@ -258,10 +295,10 @@ export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, classNam
                     </div>
                 )}
 
-                <div className={classNames('text-sm', { 'py-4': minimal, 'pt-sm pb-2': !minimal })}>
+                <div className={classNames('text-sm', { 'py-4': minimal, 'pt-6 pb-2': !minimal })}>
                     <ul className="ml-0 list-none">
                         <li
-                            className={classNames('mr-lg text-gray-200 sm:inline', {
+                            className={classNames('mr-10 sm:inline', {
                                 'text-gray-200': dark,
                                 'text-gray-500': !dark,
                             })}
@@ -270,7 +307,7 @@ export const Footer: React.FunctionComponent<Props> = ({ minimal, dark, classNam
                         </li>
 
                         {POSTSCRIPT_LINKS.map(({ name, href }) => (
-                            <li key={name} className="mt-xxs inline-block sm:mt-0">
+                            <li key={name} className="mt-2 inline-block sm:mt-0">
                                 <Link
                                     key={name}
                                     href={href}

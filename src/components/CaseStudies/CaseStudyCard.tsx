@@ -1,7 +1,7 @@
 import { FunctionComponent } from 'react'
 
 import classNames from 'classnames'
-import ArrowRightIcon from 'mdi-react/ArrowRightIcon'
+import ChevronRightIcon from 'mdi-react/ChevronRightIcon'
 import Link from 'next/link'
 
 import { buttonStyle, buttonLocation } from '../../data/tracking'
@@ -18,22 +18,46 @@ interface CaseStudy {
 // TODO: This data will eventually live in our CMS
 export const CASESTUDIES: CaseStudy[] = [
     {
+        name: 'Coinbase',
+        logo: '/case-studies/coinbase-logo.png',
+        title: 'Coinbase developers improve productivity and satisfaction using Cody while meeting strict security requirements.',
+        url: '/case-studies/coinbase-speeds-up-financial-systems-innovation/',
+    },
+    {
+        name: 'Booking.com',
+        logo: '/case-studies/booking-logo.svg',
+        title: 'Booking.com reports a measurable impact of developer productivity, time savings, and employee satisfaction by utilizing Sourcegraph.',
+        url: '/blog/announcing-our-partnership-with-dx',
+    },
+    {
+        name: 'Palo Alto Networks',
+        logo: '/home/carousel/palo-alto-logo.svg',
+        title: 'Palo Alto Networks boosts productivity for 2,000 developers by up to 40% using a secure Sourcegraph deployment.',
+        url: 'https://aws.amazon.com/partners/success/palo-alto-networks-anthropic-sourcegraph/',
+    },
+    {
+        name: '1Password',
+        logo: '/case-studies/1password-logo.png',
+        title: '1Password uses Code Search and Cody to increase productivity while working in a distributed codebase.',
+        url: '/case-studies/1password-increases-productivity-in-a-distributed-codebase',
+    },
+    {
+        name: 'Qualtrics',
+        logo: '/case-studies/qualtrics-logo.png',
+        title: 'Qualtrics uses Cody to speed up code understanding and write unit tests in minutes.',
+        url: '/case-studies/qualtrics-speeds-up-unit-tests-and-code-understanding-with-cody',
+    },
+    {
+        name: 'Leidos',
+        logo: '/case-studies/leidos-logo.svg',
+        title: 'Leidos uses Cody for its security, context-awareness, and interoperability with the latest LLMs.',
+        url: '/case-studies/cody-leidos-maximizing-efficiency-heightened-security-ai-race',
+    },
+    {
         name: 'Nine',
         logo: '/case-studies/nine-logo.svg',
         title: 'Nine empowers productivity and enhances security with Sourcegraph.',
         url: '/case-studies/how-sourcegraph-transformed-nine-development-workflow',
-    },
-    {
-        name: 'Neo Financial',
-        logo: '/external-logos/neo-financial.svg',
-        title: 'Neo Financial improves the developer experience with Sourcegraph.',
-        url: '/case-studies/neo-financial-improves-the-developer-experience-with-sourcegraph',
-    },
-    {
-        name: 'HashiCorp',
-        logo: '/external-logos/hashicorp-logo.svg',
-        title: 'HashiCorp streamlines cross-repository code search and fixes with Sourcegraph.',
-        url: '/case-studies/hashicorp-uses-sourcegraph-to-streamline-cross-repository-code-search',
     },
     {
         name: 'Nutanix',
@@ -107,6 +131,12 @@ export const CASESTUDIES: CaseStudy[] = [
         title: 'Thorn deprecates legacy code safely.',
         url: '/case-studies/we-are-thorn',
     },
+    {
+        name: 'Reddit',
+        logo: '/external-logos/reddit-logo.png',
+        title: 'Read how the Reddit team wrangles code across 2,000+ repos with the help of Sourcegraph',
+        url: 'https://www.reddit.com/r/RedditEng/comments/1bdtrjq/wrangling_2000_git_repos_at_reddit/',
+    },
 ]
 
 export const CaseStudyCard: FunctionComponent<{
@@ -122,20 +152,42 @@ export const CaseStudyCard: FunctionComponent<{
     logoClassName,
     titleClassName,
     linkClassName,
-    icon = <ArrowRightIcon size={20} className="ml-1 inline" />,
+    icon = <ChevronRightIcon className="link-icon" />,
 }) => (
     <div className="grow">
         <div className="md:pr-12">
-            <img
-                className={classNames('mb-6 max-h-[60px] max-w-[135px]', { 'brightness-0': bwLogo }, logoClassName)}
-                src={logo}
-                alt={`${name} logo`}
-            />
+            {/* company logo */}
+            {url.includes('http') ? (
+                <a href={url} target="_blank" rel="nofollow noreferrer" title={linkText + ': ' + title}>
+                    <img
+                        className={classNames(
+                            'mb-6 max-h-[60px] max-w-[135px]',
+                            { 'brightness-0': bwLogo },
+                            logoClassName
+                        )}
+                        src={logo}
+                        alt={`${name} logo`}
+                    />
+                </a>
+            ) : (
+                <Link href={url} title={linkText + ': ' + title}>
+                    <img
+                        className={classNames(
+                            'mb-6 max-h-[60px] max-w-[135px]',
+                            { 'brightness-0': bwLogo },
+                            logoClassName
+                        )}
+                        src={logo}
+                        alt={`${name} logo`}
+                    />
+                </Link>
+            )}
 
             {altTitle && <h5>{altTitle}</h5>}
 
             <p className={titleClassName}>{title}</p>
 
+            {/* link to read case study */}
             {url.includes('http') ? (
                 <a
                     href={url}
@@ -145,7 +197,7 @@ export const CaseStudyCard: FunctionComponent<{
                     data-button-style={buttonStyle.text}
                     data-button-location={buttonLocation.body}
                     data-button-type="cta"
-                    className={classNames('font-bold no-underline hover:text-violet-300', linkClassName)}
+                    className={classNames('btn-link btn-link-icon', linkClassName)}
                 >
                     {linkText}
                     {icon}
@@ -157,7 +209,7 @@ export const CaseStudyCard: FunctionComponent<{
                     data-button-style={buttonStyle.text}
                     data-button-location={buttonLocation.body}
                     data-button-type="cta"
-                    className={classNames('font-bold no-underline hover:text-violet-300', linkClassName)}
+                    className={classNames('btn-link btn-link-icon', linkClassName)}
                 >
                     {linkText}
                     {icon}

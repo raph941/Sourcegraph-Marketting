@@ -20,10 +20,10 @@ export const CaseStudy: FunctionComponent = () => (
             logo="/external-logos/sofi-logo-white.png"
             quote={{
                 text: 'Sourcegraph is an ingrained part of my daily process at SoFi. With Sourcegraph, our engineers can understand all of the repercussions of committing a change to a service that is exposed to other services.',
-                author: 'Ursula Robertson, Engineering Manager, SoFi',
-                image: '/case-studies/ursula-robertson-sofi.jpg',
+                author: 'Engineering Manager, SoFi',
+                image: '',
             }}
-            pdf="https://sourcegraphstatic.com/sofi_case_study.pdf"
+            pdf="https://sourcegraphstatic.com/sofi_case_study_2024.pdf"
         >
             <ContentSection background="white" slimWidth={true}>
                 <p>
@@ -32,7 +32,7 @@ export const CaseStudy: FunctionComponent = () => (
                     money. With Sourcegraph, SoFi can innovate and move quickly while keeping up with hundreds of
                     microservices.
                 </p>
-                <h2 className="pt-md pb-1">The need for cross-repository code search</h2>
+                <h2 className="pt-8 pb-1">The need for cross-repository code search</h2>
                 <p>
                     When SoFi decided to switch their code host from Bitbucket to GitLab they quickly realized they
                     would need a more powerful code search tool to search over their hundreds of repositories. They also
@@ -43,6 +43,7 @@ export const CaseStudy: FunctionComponent = () => (
                     <Link
                         href="/blog/from-saas-to-on-premises"
                         title="on-prem solution"
+                        className="btn-link"
                         data-button-style={buttonStyle.text}
                         data-button-location={buttonLocation.body}
                         data-button-type="cta"
@@ -51,7 +52,7 @@ export const CaseStudy: FunctionComponent = () => (
                     </Link>
                     .
                 </p>
-                <h2 className="pt-md pb-1">Move fast and don't break things</h2>
+                <h2 className="pt-8 pb-1">Move fast and don't break things</h2>
                 <p>
                     As a financial institution, SoFi needs to avoid downtime—but they also need to continuously innovate
                     to compete. SoFi runs hundreds of microservices. Their fast growth makes it difficult to maintain a

@@ -1,9 +1,7 @@
 .cody-animation code[class*='language-'],
 .cody-animation pre[class*='language-'] {
     background: transparent;
-    color: white;
-    text-shadow: 0 1px rgba(0, 0, 0, 0.3);
-    font-family: 'Fira Code', 'Fira Mono', Menlo, Consolas, 'DejaVu Sans Mono', monospace;
+    color: #c7ffff;
     direction: ltr;
     text-align: left;
     white-space: pre;
@@ -15,6 +13,9 @@
     tab-size: 2;
     -webkit-hyphens: none;
     hyphens: none;
+    /* Same stack as font-systemMono */
+    font-family: ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    font-weight: normal;
 }
 
 .cody-animation pre[class*='language-'] {
@@ -33,13 +34,17 @@
 .cody-animation .token.comment,
 .cody-animation .token.prolog,
 .cody-animation .token.cdata {
-    color: hsl(220, 10%, 40%);
+    color: #ce9cff;
+}
+
+.cody-animation .token.comment {
+    font-style: normal;
 }
 
 .cody-animation .token.doctype,
 .cody-animation .token.punctuation,
 .cody-animation .token.entity {
-    color: hsl(220, 14%, 71%);
+    color: #f5f7fb;
 }
 
 .cody-animation .token.attr-name,
@@ -77,7 +82,7 @@
 .cody-animation .token.variable,
 .cody-animation .token.operator,
 .cody-animation .token.function {
-    color: hsl(207, 82%, 66%);
+    color: #c7ffff;
 }
 
 .cody-animation .token.url {
@@ -86,11 +91,11 @@
 
 .cody-animation .token.attr-value > .token.punctuation.attr-equals,
 .cody-animation .token.special-attr > .token.attr-value > .token.value.css {
-    color: hsl(220, 14%, 71%);
+    color: #c7ffff;
 }
 
 .cody-animation .language-javascript .token.operator {
-    color: hsl(286, 60%, 67%);
+    color: #f93;
 }
 
 .cody-animation
@@ -140,4 +145,21 @@
     50% {
         opacity: 0;
     }
+}
+
+.cody-multiple-lines {
+    position: absolute;
+    width: 100%;
+    background-color: transparent;
+    z-index: 11111;
+}
+.cody-multiple-lines::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 20px;
+    background-color: #343a4d;
+    z-index: -1;
 }

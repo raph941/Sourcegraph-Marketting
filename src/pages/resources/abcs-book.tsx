@@ -13,12 +13,12 @@ export const AbcsEbook: FunctionComponent = () => (
             title: "Our ABCs: Always Be Coding children's book. Made with ❤️ by Sourcegraph.",
             description:
                 "At Sourcegraph, many of us have young children who we're trying to provide fun new learning experiences for at home. That's why we created a new digital children's book titled \"Our ABCs: Always Be Coding\"—for all children that wonder what their techie parents do all day, night, and some weekends, too!",
-            image: 'https://about.sourcegraph.com/other/abcs-book/our-abcs.png',
+            image: 'https://sourcegraph.com/other/abcs-book/our-abcs.png',
         }}
     >
         <ContentSection>
             <div className="mx-auto max-w-5xl">
-                <h1 className="mb-sm text-center">Our ABCs: Always Be Coding children's book</h1>
+                <h1 className="mb-6 text-center">Our ABCs: Always Be Coding children's book</h1>
 
                 <p className="text-center">
                     <img
@@ -55,6 +55,7 @@ export const AbcsEbook: FunctionComponent = () => (
                     <a
                         href="https://cdn2.hubspot.net/hubfs/2762526/CTA%20assets/sourcegraph-abc-book.pdf"
                         title="Our ABCs: Always Be Coding"
+                        className="btn-link"
                         data-button-style={buttonStyle.text}
                         data-button-location={buttonLocation.body}
                         data-button-type="cta"
@@ -105,8 +106,9 @@ export const AbcsEbook: FunctionComponent = () => (
                 <p className="text-center">
                     We hope you enjoy the book and would love to get your feedback{' '}
                     <a
-                        href="https://twitter.com/intent/tweet?text=For%20all%20children%20at%20home%20that%20wonder%20what%20their%20techie%20parents%20do%20all%20day%2C%20night%2C%20and%20some%20weekends%2C%20too%2C%20they%20need%20the%20%22Our%20ABCs%3A%20Always%20Be%20Coding%22%20book%20by%20@sourcegraph%20-%20https%3A//about.sourcegraph.com/abc%20%23ABCsbook"
+                        href="https://twitter.com/intent/tweet?text=For%20all%20children%20at%20home%20that%20wonder%20what%20their%20techie%20parents%20do%20all%20day%2C%20night%2C%20and%20some%20weekends%2C%20too%2C%20they%20need%20the%20%22Our%20ABCs%3A%20Always%20Be%20Coding%22%20book%20by%20@sourcegraph%20-%20https%3A//sourcegraph.com/abc%20%23ABCsbook"
                         title="Via Twitter"
+                        className="btn-link"
                         data-button-style={buttonStyle.text}
                         data-button-location={buttonLocation.body}
                         data-button-type="cta"
@@ -117,6 +119,7 @@ export const AbcsEbook: FunctionComponent = () => (
                     <a
                         href="mailto:hi+abc@sourcegraph.com"
                         title="Email"
+                        className="btn-link"
                         data-button-style={buttonStyle.text}
                         data-button-location={buttonLocation.body}
                         data-button-type="cta"
@@ -129,7 +132,7 @@ export const AbcsEbook: FunctionComponent = () => (
                 <p className="text-center">
                     <a
                         className="button btn btn-primary"
-                        href="https://twitter.com/intent/tweet?text=For%20all%20children%20at%20home%20that%20wonder%20what%20their%20techie%20parents%20do%20all%20day%2C%20night%2C%20and%20some%20weekends%2C%20too%2C%20they%20need%20the%20%22Our%20ABCs%3A%20Always%20Be%20Coding%22%20book%20by%20@sourcegraph%20-%20https%3A//about.sourcegraph.com/abc%20%23abcsbook%20%23TYCTWD%20%23TODASTW%20%23BringYourKidsToWorkDay"
+                        href="https://twitter.com/intent/tweet?text=For%20all%20children%20at%20home%20that%20wonder%20what%20their%20techie%20parents%20do%20all%20day%2C%20night%2C%20and%20some%20weekends%2C%20too%2C%20they%20need%20the%20%22Our%20ABCs%3A%20Always%20Be%20Coding%22%20book%20by%20@sourcegraph%20-%20https%3A//sourcegraph.com/abc%20%23abcsbook%20%23TYCTWD%20%23TODASTW%20%23BringYourKidsToWorkDay"
                         title="Click to Tweet"
                         data-button-style={buttonStyle.primary}
                         data-button-location={buttonLocation.body}
@@ -140,18 +143,18 @@ export const AbcsEbook: FunctionComponent = () => (
                     </a>
                 </p>
 
-                <h2 className="mt-5xl">FAQs</h2>
+                <h2 className="mt-24">FAQs</h2>
 
                 <p>We've had quite a few folks reach out with questions about this book and future ones.</p>
 
-                <h3 className="pt-xs">Do you plan on selling this as a physical book?</h3>
+                <h3 className="pt-4">Do you plan on selling this as a physical book?</h3>
                 <p>
                     We want to make it easy for folks to get a physical copy and while we don't (yet) have plans to
                     print and distribute, we're looking into vendors that can print and ship on demand. In any case, the
                     PDF is high-resolution so you can print it yourself.
                 </p>
 
-                <h3 className="pt-xs">Do you have any other books like this planned?</h3>
+                <h3 className="pt-4">Do you have any other books like this planned?</h3>
                 <p>
                     We've been blown away by the response to this book and while we'd love to add "children's book
                     authoring" to the list of Sourcegraph capabilities, we haven't yet decided if we plan to turn this

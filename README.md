@@ -1,6 +1,6 @@
-# [about.sourcegraph.com](https://about.sourcegraph.com) (Sourcegraph marketing site)
+# [sourcegraph.com](https://sourcegraph.com) (Sourcegraph marketing site)
 
-This repository contains the [about.sourcegraph.com](https://about.sourcegraph.com) website.
+This repository contains the [sourcegraph.com](https://sourcegraph.com) website.
 
 ## Development
 
@@ -28,4 +28,4 @@ Ask in the [#marketing channel](https://app.slack.com/client/T02FSM7DL/CNC4YAL1E
 
 If blog posts aren't showing up:
 
-Run: `yarn build:cache`
+Run: `yarn build:cache` or `pnpm build:cache`

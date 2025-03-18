@@ -10,8 +10,8 @@ import Link from 'next/link'
 import { Layout, ContentSection, ContentPage } from '../../components'
 import { buttonStyle, buttonLocation } from '../../data/tracking'
 
-const title = 'Sourcegraph - Contact Sourcegraph'
-const description = 'Contact a real human being on our team.'
+const title = 'Contact Sourcegraph'
+const description = 'Get in touch with a member of our team.'
 
 const ContactHome: FunctionComponent = () => (
     <Layout
@@ -21,25 +21,12 @@ const ContactHome: FunctionComponent = () => (
         }}
     >
         <ContentPage title={title} description={description}>
-            <ContentSection className="pt-3xl pb-xxs">
-                <div className="grid grid-cols-1 gap-md md:grid-cols-2">
-                    <section className="rounded-lg border-1 p-xs">
+            <ContentSection className="pt-16 pb-2">
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                    <section className="rounded-lg border-1 p-4">
                         <h4>Product support</h4>
-                        <p>For help using Sourcegraph:</p>
+                        <p>For help with Sourcegraph and Cody:</p>
                         <ul className="ml-0 list-none">
-                            <li>
-                                <a
-                                    href="https://github.com/sourcegraph/sourcegraph/issues"
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    title="File a public issue"
-                                    data-button-style={buttonStyle.text}
-                                    data-button-location={buttonLocation.body}
-                                    data-button-type="cta"
-                                >
-                                    <GithubIcon className="inline" /> File a public issue
-                                </a>
-                            </li>
                             <li>
                                 <a
                                     href="mailto:support@sourcegraph.com"
@@ -50,17 +37,17 @@ const ContactHome: FunctionComponent = () => (
                                     data-button-location={buttonLocation.body}
                                     data-button-type="cta"
                                 >
-                                    <EmailIcon className="inline" /> Email support@sourcegraph.com
+                                    <EmailIcon className="inline" /> support@sourcegraph.com
                                 </a>
                             </li>
                         </ul>
                     </section>
-                    <section className="rounded-lg border-1 p-xs">
+                    <section className="rounded-lg border-1 p-4">
                         <h4>Sales</h4>
                         <p>For information about products and purchasing:</p>
                         <Link
-                            href="/demo"
-                            className="btn btn-outline-primary"
+                            href="/contact/request-info"
+                            className="btn btn-secondary"
                             title="Contact sales"
                             data-button-style={buttonStyle.outline}
                             data-button-location={buttonLocation.body}
@@ -69,13 +56,13 @@ const ContactHome: FunctionComponent = () => (
                             Contact sales
                         </Link>
                     </section>
-                    <section className="rounded-lg border-1 p-xs">
+                    <section className="rounded-lg border-1 p-4">
                         <h4>Jobs</h4>
 
                         <p>For information about joining our team:</p>
                         <a
                             href="https://boards.greenhouse.io/sourcegraph91"
-                            className="btn btn-outline-primary"
+                            className="btn btn-secondary"
                             title="See career opportunities"
                             data-button-style={buttonStyle.outline}
                             data-button-location={buttonLocation.body}
@@ -84,7 +71,7 @@ const ContactHome: FunctionComponent = () => (
                             See career opportunities
                         </a>
                     </section>
-                    <section className="rounded-lg border-1 p-xs">
+                    <section className="rounded-lg border-1 p-4">
                         <h4>Everything else</h4>
                         <ul className="ml-0 list-none">
                             <li>

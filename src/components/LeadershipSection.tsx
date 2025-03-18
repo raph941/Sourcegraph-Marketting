@@ -34,18 +34,9 @@ const LEADERS: {
         twitter: 'https://twitter.com/beyang',
     },
     {
-        name: 'Steve Yegge',
-        image: '/staff/avatar-stevey.png',
-        title: 'Head of Engineering (Cody and AI)',
-        bio: 'https://handbook.sourcegraph.com/company/team#steve-yegge',
-        github: 'https://github.com/steveyegge',
-        linkedin: 'https://www.linkedin.com/in/steveyegge/',
-        twitter: 'https://twitter.com/steve_yegge',
-    },
-    {
         name: 'Erika Rice Scherpelz',
         image: '/staff/erika-rice-scherpelz.png',
-        title: 'Head of Engineering (Search and Platform)',
+        title: 'Head of Engineering',
         bio: 'https://handbook.sourcegraph.com/team/#erika-rice-scherpelz',
         github: 'https://github.com/erikars',
         linkedin: 'https://www.linkedin.com/in/erikars/',
@@ -58,22 +49,6 @@ const LEADERS: {
         github: 'https://github.com/dadlerj',
         linkedin: 'https://www.linkedin.com/in/danielnealadler',
         twitter: 'https://twitter.com/DanielNealAdler',
-    },
-    {
-        name: 'Tammy Zhu',
-        image: '/staff/avatar-tammy.png',
-        title: 'VP Legal',
-        bio: 'https://handbook.sourcegraph.com/company/team#tammy-zhu',
-        github: 'https://github.com/tammy-zhu',
-        linkedin: 'https://www.linkedin.com/in/tammy-zhu-30040820/',
-    },
-    {
-        name: 'Chris Sells',
-        image: '/staff/avatar-chris.jpg',
-        title: 'Head of Product',
-        bio: 'https://handbook.sourcegraph.com/team/#chris-sells',
-        github: 'https://github.com/csells',
-        linkedin: 'https://www.linkedin.com/in/csells/',
     },
     {
         name: 'Carly Jones',
@@ -92,20 +67,19 @@ const LEADERS: {
         linkedin: 'https://www.linkedin.com/in/aimee-menne-8343487/',
     },
     {
-        name: 'Raman Sharma',
-        image: '/staff/raman-sharma.png',
-        title: 'Chief Marketing Officer',
-        bio: 'https://handbook.sourcegraph.com/team/',
-        github: 'https://github.com/creativefisher',
-        linkedin: 'https://www.linkedin.com/in/ramansharma',
-        twitter: 'https://twitter.com/rasharm',
+        name: 'Brock Perko',
+        image: '/staff/brock-perko.png',
+        title: 'VP Sales',
+        bio: 'https://handbook.sourcegraph.com/team/#brock-perko',
+        github: 'https://github.com/0xPerko',
+        linkedin: 'https://www.linkedin.com/in/brock-perko-5094349/',
     },
 ]
 
 export const LeadershipSection: FunctionComponent<{ className?: string }> = ({ className = '' }) => (
     <div id="leadership" className={`leadership-section ${className}`}>
         <h2>Leadership</h2>
-        <div className="my-8 grid grid-cols-1 gap-xl sm:grid-cols-2 md:grid-cols-3">
+        <div className="my-8 grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-3">
             {LEADERS.map(staff => (
                 <div key={`${staff.name.replace(' ', '-').toLowerCase()}`} className="">
                     <a

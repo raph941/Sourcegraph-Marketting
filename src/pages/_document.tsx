@@ -1,8 +1,20 @@
-import Document, { Head, Html, Main, NextScript } from 'next/document'
+import Document, { DocumentContext, DocumentInitialProps, Head, Html, Main, NextScript } from 'next/document'
 import Script from 'next/script'
 
-export default class MyDocument extends Document {
+interface MyDocumentProps extends DocumentInitialProps {
+    pathName: string
+}
+
+export default class MyDocument extends Document<MyDocumentProps> {
+    public static async getInitialProps(ctx: DocumentContext): Promise<MyDocumentProps> {
+        const initialProps = await Document.getInitialProps(ctx)
+        return { ...initialProps, pathName: ctx.asPath || '' }
+    }
+
     public override render(): JSX.Element {
+        const { pathName } = this.props
+        const isHomepage = pathName === '/'
+
         return (
             <Html lang="en">
                 <Head>
@@ -33,16 +45,25 @@ export default class MyDocument extends Document {
                     {/* Google Fonts */}
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+                    
                     <link
-                        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Source+Code+Pro&display=swap"
+                        href="https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
                         rel="stylesheet"
                     />
                     <link
                         href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono&display=swap"
                         rel="stylesheet"
                     />
+                    <link
+                        href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&family=Source+Code+Pro&display=swap"
+                        rel="stylesheet"
+                    />
 
-                    {/* Google structured data. */}
+                    {/* Inter Font */}
+                    <link rel="preconnect" href="https://rsms.me/" />
+                    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+
+                    {/* Google structured data. (WebSite) */}
                     <Script
                         id="structured_data"
                         type="application/ld+json"
@@ -56,6 +77,34 @@ export default class MyDocument extends Document {
                             }),
                         }}
                     />
+
+                    {/* Google structured data. (Organization) */}
+                    {isHomepage && (
+                        <Script
+                            id="structured_data_company"
+                            type="application/ld+json"
+                            strategy="beforeInteractive"
+                            dangerouslySetInnerHTML={{
+                                __html: JSON.stringify({
+                                    '@context': 'https://schema.org',
+                                    '@type': 'Organization',
+                                    image: 'https://sourcegraph.com/sourcegraph-logo.svg',
+                                    url: 'https://www.sourcegraph.com',
+                                    sameAs: [
+                                        'https://github.com/sourcegraph',
+                                        'https://twitter.com/sourcegraph',
+                                        'https://www.youtube.com/c/Sourcegraph/featured',
+                                        'https://www.linkedin.com/sourcegraph/',
+                                        'https://discord.com/servers/sourcegraph-969688426372825169',
+                                    ],
+                                    logo: 'https://sourcegraph.com/sourcegraph-logo.svg',
+                                    name: 'Sourcegraph',
+                                    description:
+                                        "Sourcegraph's code intelligence platform makes it easy for devs to write, fix, and maintain code with Cody, the AI coding assistant, and Code Search",
+                                }),
+                            }}
+                        />
+                    )}
 
                     {/* Cookiebot */}
                     {/* Cookiebot recommends this in the head, which aligns with Next.js' recommendation for CCMs */}
@@ -113,15 +162,6 @@ export default class MyDocument extends Document {
                             saq('ts', 'RhgJyv1POYn3YCYB1MQ6Gw');
                         `}
                     </Script>
-
-                    {/* Plausible Analytics (GA Alternative) */}
-                    {/* Plausible recommends this in the head, but Next.js recommends afterInteractive */}
-                    <Script
-                        id="script-plausible"
-                        data-domain="about.sourcegraph.com"
-                        src="https://plausible.io/js/plausible.js"
-                        strategy="afterInteractive"
-                    />
 
                     {/* Triblio "Webpage Personalization" */}
                     {/* Triblio recommends this in the head which we follow with beforeInteractive */}

@@ -1,45 +1,11 @@
 import { FunctionComponent, ReactNode } from 'react'
 
-import ChevronRightIcon from 'mdi-react/ChevronRightIcon'
 import Link from 'next/link'
 
-import { Badge, ContentSection, Heading, Hero, Layout, Blockquote, CaseStudyCard } from '../../components'
-import { buttonStyle, buttonLocation } from '../../data/tracking'
-
-export const CUSTOMER_STORIES = [
-    [
-        {
-            name: 'Neo Financial',
-            logo: '/external-logos/neo-financial.svg',
-            title: 'Neo Financial improves the developer experience with Sourcegraph.',
-            url: '/case-studies/neo-financial-improves-the-developer-experience-with-sourcegraph',
-            logoSize: 'w-[81px] h-[25px]',
-        },
-        {
-            name: 'FactSet',
-            logo: '/external-logos/factset-logo.svg',
-            title: 'FactSet migrates from Perforce to GitHub.',
-            url: '/case-studies/factset-migrates-from-perforce-to-github',
-            logoSize: 'w-[162px] h-[31px]',
-        },
-    ],
-    [
-        {
-            name: 'Indeed',
-            logo: '/external-logos/indeed-logo.svg',
-            title: 'Indeed keeps code up to date and accelerates development velocity.',
-            url: '/case-studies/indeed-accelerates-development-velocity',
-            logoSize: 'w-[150.735px] h-[40.328px]',
-        },
-        {
-            name: 'CERN',
-            logo: '/external-logos/cern-name-logo.svg',
-            title: 'Sourcegraph empowers CERN to tackle code reuse and code changes in mission-critical applications.',
-            url: '/case-studies/cern-reduces-technical-debt',
-            logoSize: 'w-[107px] h-[31px] object-cover',
-        },
-    ],
-]
+import { Blockquote, ContentSection, Hero, Layout } from '../../components'
+import MoreCaseStudies from '../../components/CaseStudies/MoreCaseStudies'
+import SidebarCta from '../../components/SidebarCta'
+import { buttonLocation, buttonStyle } from '../../data/tracking'
 
 export const CaseStudy: FunctionComponent = () => (
     <Layout
@@ -54,25 +20,16 @@ export const CaseStudy: FunctionComponent = () => (
             <Hero
                 className="relative"
                 backButton={{
-                    text: 'Back to Resources',
+                    text: 'Customer stories',
                     link: '/case-studies',
                 }}
                 variant="white"
                 title={
-                    <ContentSection parentClassName='!px-0 !py-0'>
-                        <Badge
-                            color="violet"
-                            text="CUSTOMER STORIES"
-                            size="small"
-                            className="relative -top-[24px] z-10 md:-top-[5px]"
-                        />
-                        <Heading
-                            size="h1"
-                            className="relative -top-3 z-10 pb-16 !text-[52px] md:-top-[2px] lg:w-[949px]"
-                        >
+                    <ContentSection parentClassName="!px-0 !py-0">
+                        <h1 className="relative -top-3 z-10 pb-16 md:-top-[2px] lg:w-[949px]">
                             Empowering productivity, enhancing security: How Sourcegraph transformed Nine’s development
                             workflow
-                        </Heading>
+                        </h1>
                         <div className="relative z-[10] -mt-3 flex w-full flex-col gap-x-8 rounded-lg border border-gray-500 bg-white py-16 px-12 shadow-lg md:-mt-[2px] md:flex-row  xl:w-[1280px]">
                             <img
                                 className="mb-8 w-[148px] md:mb-0"
@@ -96,7 +53,7 @@ export const CaseStudy: FunctionComponent = () => (
         <ContentSection className="mt-[48px] px-1 lg:mt-[26.75px]" parentClassName="!py-0 relative z-10">
             <div className="mx-auto flex w-full flex-col-reverse gap-x-12 md:flex-row">
                 <div>
-                    <div className="sticky top-[54px] w-full md:w-[378px]">
+                    <div className="sticky top-[118px] w-full md:w-[378px]">
                         <SidebarContent
                             title="$276K saved"
                             content="$276K saved in trial period: Nine's Platform Engineering team saved an estimated
@@ -112,21 +69,7 @@ export const CaseStudy: FunctionComponent = () => (
                             content="Nine responded more effectively to security threats by quickly identifying
                             vulnerabilities and automating security-related changes across repositories."
                         />
-                        <div className="sg-bg-code-search-cta mx-auto flex w-full flex-col rounded-lg py-12 px-6 text-center sm:items-center md:w-[378px] md:items-center md:text-left">
-                            <Heading size="h2" className="pb-4 !text-4xl text-white ">
-                                Try Sourcegraph on your code
-                            </Heading>
-                            <p className="pb-1 text-lg text-gray-200">
-                                Experience code intelligence with a free trial for you and your team, or search millions
-                                of open source repositories.
-                            </p>
-                            <Link
-                                className="btn btn-inverted-primary flex min-w-fit self-center rounded-md bg-white py-3 px-5 text-center text-base text-violet-500 hover:!bg-violet-400 md:self-start md:py-2 md:px-6"
-                                href="/demo"
-                            >
-                                Meet with a product expert
-                            </Link>
-                        </div>
+                        <SidebarCta />
                     </div>
                 </div>
                 <ContentSection className="pb-4 md:pb-0 md:pt-[35px]" parentClassName="!px-0 !py-0">
@@ -151,7 +94,7 @@ export const CaseStudy: FunctionComponent = () => (
                                     resulting in increased developer productivity, efficient code management, and
                                     enhanced security. By leveraging advanced{' '}
                                     <Link
-                                        href="https://docs.sourcegraph.com/code_search"
+                                        href="https://sourcegraph.com/docs/code_search"
                                         title="Code Search"
                                         data-button-style={buttonStyle.text}
                                         data-button-location={buttonLocation.body}
@@ -164,7 +107,7 @@ export const CaseStudy: FunctionComponent = () => (
                                     </Link>{' '}
                                     and{' '}
                                     <Link
-                                        href="https://docs.sourcegraph.com/batch_changes"
+                                        href="https://sourcegraph.com/docs/batch_changes"
                                         title="Batch Changes"
                                         data-button-style={buttonStyle.text}
                                         data-button-location={buttonLocation.body}
@@ -225,7 +168,7 @@ export const CaseStudy: FunctionComponent = () => (
                                 <p className="text-lg">
                                     Nine implemented Sourcegraph's advanced{' '}
                                     <Link
-                                        href="https://docs.sourcegraph.com/code_search"
+                                        href="https://sourcegraph.com/docs/code_search"
                                         title="Code Search"
                                         data-button-style={buttonStyle.text}
                                         data-button-location={buttonLocation.body}
@@ -238,7 +181,7 @@ export const CaseStudy: FunctionComponent = () => (
                                     </Link>
                                     ,{' '}
                                     <Link
-                                        href="https://docs.sourcegraph.com/batch_changes"
+                                        href="https://sourcegraph.com/docs/batch_changes"
                                         title="Batch Changes"
                                         data-button-style={buttonStyle.text}
                                         data-button-location={buttonLocation.body}
@@ -251,7 +194,7 @@ export const CaseStudy: FunctionComponent = () => (
                                     </Link>
                                     , and valuable{' '}
                                     <Link
-                                        href="https://docs.sourcegraph.com/code_monitoring"
+                                        href="https://sourcegraph.com/docs/code_monitoring"
                                         title="code monitoring"
                                         data-button-style={buttonStyle.text}
                                         data-button-location={buttonLocation.body}
@@ -368,29 +311,8 @@ export const CaseStudy: FunctionComponent = () => (
                     />
                 </ContentSection>
             </div>
-            <div className="ml-auto flex flex-col pt-16 pb-[18px] md:w-[830px] md:py-16">
-                <Heading size="h2" className="pb-12 !text-4xl md:pb-[59px]">
-                    Explore other customer stories
-                </Heading>
-                <div className="z-[10] ml-0 flex flex-col-reverse md:flex-col">
-                    {CUSTOMER_STORIES.map((study, index) => (
-                        <div key={index} className="m-0 grid gap-x-[258px]  md:grid-cols-2 ">
-                            {study.map(std => (
-                                <div className="w-[298px] pb-[46px] pr-0 md:first:pb-[30px]" key={std.name}>
-                                    <CaseStudyCard
-                                        titleClassName="text-lg w-[298px]"
-                                        logoClassName={std.logoSize}
-                                        study={std}
-                                        linkClassName="text-violet-500 hover:text-violet-400"
-                                        icon={<ChevronRightIcon size={20} className="ml-1 inline" />}
-                                        key={std.name}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    ))}
-                </div>
-            </div>
+
+            <MoreCaseStudies />
         </ContentSection>
         <div className="absolute top-0 right-0 hidden h-[30%] w-[40%] bg-[url('/case-studies/side-of-page-radials.svg')] bg-contain bg-right  bg-no-repeat md:flex" />
         <div className="absolute bottom-0 left-0 hidden h-[20%] w-[100%] bg-[url('/case-studies/bottom-page-radials.svg')]  bg-cover bg-left  bg-no-repeat md:inline-block" />
@@ -402,11 +324,7 @@ const CaseStudyContent: FunctionComponent<{
     title?: string
 }> = ({ content, title }) => (
     <div className="mb-[48px]">
-        {title && (
-            <Heading size="h2" className="mb-[24px] !text-4xl">
-                {title}
-            </Heading>
-        )}
+        {title && <h2 className="mb-[24px]">{title}</h2>}
         {typeof content === 'string' ? <p className="text-lg">{content}</p> : content}
     </div>
 )
@@ -416,9 +334,7 @@ const SidebarContent: FunctionComponent<{
     title: string
 }> = ({ content, title }) => (
     <div className="mb-8  md:w-[378px]">
-        <Heading size="h2" className="mb-2 !text-[30px] text-violet-500">
-            {title}
-        </Heading>
+        <h2 className="mb-2 text-violet-500">{title}</h2>
         {typeof content === 'string' ? <p className="text-[18px]">{content}</p> : content}
     </div>
 )

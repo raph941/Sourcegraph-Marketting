@@ -96,7 +96,7 @@ export interface BlogPost {
 
 const CONTENT_PARENT_DIRECTORY = './content/'
 
-export const getAllPublishedBlogPosts = async (): Promise<BlogPost[] | null> => {
+export const getAllPublishedBlogPosts = async (tag?: string | string[]): Promise<BlogPost[] | null> => {
     const allSlugs = await getSortedSlugs('blogposts')
     if (!allSlugs) {
         return null
@@ -120,5 +120,48 @@ export const getAllPublishedBlogPosts = async (): Promise<BlogPost[] | null> => 
         })
     )
 
-    return posts.filter(post => post.frontmatter.published)
+    return posts.filter(post => {
+        const hasMatchingTag =
+            tag && Array.isArray(tag)
+                ? tag.some(tagItem => post.frontmatter.published && (post.frontmatter.tags?.includes(tagItem) ?? false))
+                : post.frontmatter.published && (!tag || post.frontmatter.tags?.includes(tag))
+        return hasMatchingTag
+    })
+}
+
+export const getAllPublishedChangeLogPosts = async (tag?: string | string[]): Promise<BlogPost[] | null> => {
+    const allSlugs = await getSortedSlugs('changelog')
+
+    if (!allSlugs) {
+        return null
+    }
+    
+    const files = await getMarkdownFiles()
+    if (!files) {
+        return null
+    }
+    const posts = await Promise.all(
+        allSlugs.map(async (slug): Promise<BlogPost> => {
+            const filePath = files.records[slug.slugPath].filePath
+            
+            const file = (await loadMarkdownFile(path.resolve(CONTENT_PARENT_DIRECTORY, filePath))) as BlogPost
+            const excerpt = convertExcerptMarkdown(truncate(file.content, 300))
+
+            return {
+                frontmatter: file.frontmatter,
+                excerpt,
+                content: file.content,
+                slugPath: slug.slugPath,
+                urlPath: `/changelog/${slug.slugPath}`,
+            }
+        })
+    )
+
+    return posts.filter(post => {
+        const hasMatchingTag =
+            tag && Array.isArray(tag)
+                ? tag.some(tagItem => post.frontmatter.published && (post.frontmatter.tags?.includes(tagItem) ?? false))
+                : post.frontmatter.published && (!tag || post.frontmatter.tags?.includes(tag))
+        return hasMatchingTag
+    })
 }

@@ -5,7 +5,6 @@ import ArrowLeftIcon from 'mdi-react/ArrowLeftIcon'
 import Link from 'next/link'
 
 import { BlogTypeInfo } from '../../interfaces/posts'
-import { Heading } from '../Heading'
 
 interface Props extends Pick<BlogTypeInfo, 'title' | 'belowTitle' | 'baseUrl'> {
     /**
@@ -17,22 +16,22 @@ interface Props extends Pick<BlogTypeInfo, 'title' | 'belowTitle' | 'baseUrl'> {
 
 export const BlogHeader: FunctionComponent<Props> = ({ title, belowTitle, baseUrl, variant, className }) =>
     variant === 'list' ? (
-        <div className={classNames(className, 'py-sm')}>
-            <Heading as="h1" size="h3" className="inline-block !font-normal">
-                <Link href={baseUrl} className="bg-violet-100 px-4 py-2 !font-grotesk text-violet-600 hover:underline">
+        <div className={classNames(className, 'py-6')}>
+            <h3 className="inline-block text-6xl font-semibold">
+                <Link href={baseUrl} className="!font-grotesk text-gray-600 hover:underline">
                     {title}
                 </Link>
-            </Heading>
+            </h3>
 
-            {belowTitle && <div className="mt-4">{belowTitle}</div>}
+            {belowTitle && <div className="mt-5">{belowTitle}</div>}
         </div>
     ) : (
-        <nav className={classNames(className, 'my-sm')}>
+        <nav className={classNames(className, 'my-6')}>
             <Link
                 href={baseUrl}
-                className="inline-flex items-center bg-violet-100 py-1 pl-2 pr-3 !font-grotesk text-violet-600  hover:underline"
+                className="!font-grotesk group inline-flex items-center text-sm text-gray-300 hover:text-gray-600"
             >
-                <ArrowLeftIcon className="inline h-5" /> {title}
+                <ArrowLeftIcon className="inline h-3 transition-transform group-hover:-translate-x-1" /> {title}
             </Link>
         </nav>
     )

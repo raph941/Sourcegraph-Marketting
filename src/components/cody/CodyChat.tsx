@@ -1,44 +1,111 @@
 import { FunctionComponent } from 'react'
 
-import { ContentSection, Heading } from '..'
+import classNames from 'classnames'
 
-export const CodyChat: FunctionComponent = () => (
-    <ContentSection
-        className="flex w-full flex-col gap-y-[17.5px] md:gap-y-16 md:px-[60px] xl:max-w-[1280px]"
-        parentClassName="!px-0 !pb-0"
-    >
-        <div className="w-full px-6 md:w-[554px]">
-            <img className="" src="/cody/cody-chat.svg" alt="Cody Chat" />
-            <Heading size="h2" className="py-[18px] text-left !text-4xl text-white">
-                AI-powered chat for your code
-            </Heading>
-            <p className="mb-0 text-left text-lg text-gray-200">
-                Cody chat helps unblock you when you’re jumping into new projects, trying to understand legacy code, or
-                taking on tricky problems.
-            </p>
-        </div>
-        <div className="flex w-full flex-col gap-y-6 overflow-hidden text-left text-gray-200 md:flex-row lg:items-center">
-            <div className="flex w-full flex-col px-6 md:w-[398px] md:py-6">
-                <p className="pb-[17px] text-lg md:text-base">Cody can answer questions like:</p>
-                <div className="flex flex-col gap-[10px] text-xl md:text-lg">
-                    <p className="mb-0 py-[11px] px-[10px]">How is this repository structured?</p>
-                    <p className="mb-0 py-[11px] px-[10px]">What does this file do?</p>
-                    <p className="mb-0 py-[11px] px-[10px]">Where is X component defined?</p>
-                    <p className="mb-0 py-[11px] px-[10px]">Why isn’t this code working??</p>
+import { ContentSection } from '..'
+import { useWindowWidth } from '../../hooks/windowWidth'
+
+interface CodyChatProps {
+    isLight?: boolean
+}
+
+const answers = [
+    'How is this repository structured?',
+    'What does this file do?',
+    'Where is X component defined?',
+    'Why isn’t this code working??',
+]
+
+export const CodyChat: FunctionComponent<CodyChatProps> = ({ isLight = false }) => {
+    const windowWidth = useWindowWidth()
+    const screenStyle = {
+        parent: windowWidth > 1140 ? 'relative' : '',
+        img: windowWidth > 1140 ? 'absolute' : '',
+    }
+    return (
+        <ContentSection
+            className={classNames(
+                'flex w-full flex-col overflow-hidden   pt-[64px] md:rounded-2xl md:border xl:max-w-[1280px]',
+                {
+                    'border-gray-500 md:bg-violet-700 md:pt-[72px]': !isLight,
+                    'h-auto border-gray-200 border-opacity-50 bg-none md:mb-0 md:bg-white md:pt-[48px] md:pb-0 xl:max-h-[757px]':
+                        isLight,
+                }
+            )}
+            parentClassName={classNames('!px-0 !pb-0', { '!pt-0 md:!pt-[96px] pb-[16px] md:pb-0': isLight })}
+        >
+            <div className={classNames('mx-6 md:ml-14', { 'md:mb-32': !isLight, 'md:mb-0': isLight })}>
+                <div className="flex w-full max-w-[701px] flex-col gap-[18px]">
+                    <img className="h-[48px] w-[48px]" src="/cody/chat-brand-icon.svg" alt="Cody Chat" />
+                    <h2
+                        className={classNames('m-0 text-left', {
+                            'text-white': !isLight,
+                            'text-[#0F111A]': isLight,
+                        })}
+                    >
+                        AI chat for code generation and explanation
+                    </h2>
+                    <h3
+                        className={classNames('m-0 text-left md:text-2xl', {
+                            'text-[24px] !leading-[30px] !tracking-[-0.25px] text-[#343A4D]': isLight,
+                            'text-lg text-gray-200': !isLight,
+                        })}
+                    >
+                        Generate code on demand using AI. Cody also unblocks you when you’re jumping into new projects
+                        or trying to understand legacy code.
+                    </h3>
                 </div>
             </div>
-            <div className="w-full">
-                <img
-                    className="relative hidden max-w-[809px] self-stretch md:flex"
-                    src="/cody/cody-chat-interface.svg"
-                    alt="Cody Chat interface"
-                />
+
+            <div
+                className={classNames(
+                    `pb-0 pt-8 text-left md:ml-14 md:block md:flex-row lg:flex lg:flex-col lg:items-center ${screenStyle.parent}`,
+                    { 'md:pb-28': !isLight, 'md:pt-0 md:pb-[160px]': isLight }
+                )}
+            >
+                <div className={classNames('mb-6 flex w-full flex-col', { 'mt-[44.5px] md:mt-[95.5px]': isLight })}>
+                    <div className="flex max-w-[380px] flex-col justify-center gap-4 text-xl md:text-lg">
+                        <p
+                            className={classNames('px-6 leading-[27px] md:px-[9px]', {
+                                'text-sm font-[590] uppercase text-gray-200': !isLight,
+                                'text-[18px] font-normal tracking-[-0.25px] text-[#0F111A]  md:pb-[8px] md:text-sm md:font-[600] md:uppercase md:text-[#343A4D]':
+                                    isLight,
+                            })}
+                        >
+                            Cody answers your coding questions:
+                        </p>
+
+                        {answers.map(answer => (
+                            <h5
+                                key={answer}
+                                className={classNames(
+                                    'font-lg m-0 px-6 py-2 font-[590] leading-[25px] tracking-[-0.25px] md:px-2.5 md:font-normal md:leading-[27px]',
+                                    {
+                                        'ml-[10px] text-[20px] text-[#0F111A] md:ml-0 md:text-[18px]': isLight,
+                                        'text-white': !isLight,
+                                    }
+                                )}
+                            >
+                                {answer}
+                            </h5>
+                        ))}
+                    </div>
+                </div>
+                <div className="mx-6 w-full md:mx-0">
+                    <img
+                        className={classNames(`-right-[100px] flex self-stretch shadow-md ${screenStyle.img}`, {
+                            'md:-top-16 md:h-[522px] xl:-right-[20px]': !isLight,
+                            'md:bottom-[34px] md:h-[478px] xl:-right-0': isLight,
+                        })}
+                        src={
+                            isLight
+                                ? '/assets/cody/cody-chat-interface-light-v2.svg'
+                                : '/cody/cody-chat-interface-v2.png'
+                        }
+                        alt="Cody Chat interface"
+                    />
+                </div>
             </div>
-            <img
-                className="relative flex self-stretch pl-6 md:hidden"
-                src="/cody/cody-chat-mobile.svg"
-                alt="Cody Chat interface"
-            />
-        </div>
-    </ContentSection>
-)
+        </ContentSection>
+    )
+}

@@ -1,71 +1,146 @@
-import { FunctionComponent, useEffect, useState } from 'react'
+import { FunctionComponent, useEffect, useRef } from 'react'
 
 import classNames from 'classnames'
-import DownloadIcon from 'mdi-react/DownloadIcon'
+import { Expand, ShieldCheck, Cloud, ChevronRightIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
-import {
-    ContentSection,
-    Heading,
-    Layout,
-    ExternalsAuth,
-    HubSpotForm,
-    Badge,
-    Modal,
-    CodyCta,
-    CodyIde,
-    CodyAutocomplete,
-    CodyChat,
-    CodyVideoTab,
-    ContextAnimation,
-} from '../components'
+import { Layout, CodyIde, ContentSection, Badge } from '../components'
+import { BentoWithMockup } from '../components/bentoWithMockup'
+import TimedCarousel from '../components/Carousels/TimedCarousel'
+import CodyPlan from '../components/cody/CodyPlan'
+import CodyTwoColumnSection from '../components/cody/CodyTwoColumnSection'
+import { CodyIntroDualTheme } from '../components/cody/dual-theme/CodyIntroDualTheme'
+import { HowCodyWorks } from '../components/cody/HowCodyWorks'
+import { LogoGrid } from '../components/cody/LogoGrid'
+import { EnterpriseGradeSection } from '../components/Enterprise/EnterpriseGradeSection'
+import { useAuthModal } from '../context/AuthModalContext'
 import { breakpoints } from '../data/breakpoints'
-import { EventName, getEventLogger } from '../hooks/eventLogger'
 import { useWindowWidth } from '../hooks/windowWidth'
+import { captureCustomEventWithPageData } from '../lib/utils'
 
-import styles from '../styles/CustomHubspotForm.module.scss'
+const optimizedPoweritems = [
+    { label: 'Claude 3.5 Sonnet', iconUrl: '/assets/cody/anthropic-icon.svg' },
+    { label: 'Claude 3 Opus', iconUrl: '/assets/cody/anthropic-icon.svg' },
+    { label: 'GPT-4o', iconUrl: '/assets/cody/chat-gpt-icon.svg' },
+    { label: 'Gemini 1.5 Pro', iconUrl: '/assets/cody/google-gemini-icon.svg' },
+    { label: 'OpenAI o1-preview', iconUrl: '/assets/cody/chat-gpt-icon.svg' },
+    { label: 'OpenAI o1-mini', iconUrl: '/assets/cody/chat-gpt-icon.svg' },
+]
+const optimizedSpeed = [
+    { label: 'Gemini 1.5 Flash', iconUrl: '/assets/cody/google-gemini-icon.svg' },
+    { label: 'Claude 3 Haiku', iconUrl: '/assets/cody/anthropic-icon.svg' },
+    { label: 'Mixtral 8x7B', iconUrl: '/assets/cody/chat-gpt-icon.svg' },
+]
 
-const VIDEO_TAB_CONTENT = [
+const items = [
     {
-        header: 'Explain code or entire repositories',
-        description: 'Get up to speed on new projects quickly',
-        videoSrc:
-            'https://user-images.githubusercontent.com/81499360/266091359-cb00def8-08e3-4aa3-b8a5-0d0712cd38f6.mp4',
+        title: 'Autocomplete',
+        description: 'Code faster with real-time single and multi-line completions',
+        text: (
+            <div className="min-h-[555px] max-w-[738px]">
+                <video
+                    src="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/cody-autocomplete.mp4"
+                    className="rounded-2xl"
+                    autoPlay={true}
+                    loop={true}
+                    muted={true}
+                    playsInline={true}
+                >
+                    <track kind="captions" srcLang="en" label="English" />
+                </video>
+            </div>
+        ),
     },
     {
-        header: 'Generate unit tests in seconds',
-        description: 'Spend more time writing new code',
-        videoSrc:
-            'https://user-images.githubusercontent.com/81499360/266091266-93479f7e-e0b9-4203-b600-36e1777a7164.mp4',
+        title: 'Inline edits',
+        description: 'Fix and refactor code with in-line edit commands',
+        text: (
+            <div className="min-h-[555px] max-w-[738px]">
+                <video
+                    src="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/cody-edits.mp4"
+                    className="rounded-2xl"
+                    autoPlay={true}
+                    loop={true}
+                    muted={true}
+                    playsInline={true}
+                >
+                    <track kind="captions" srcLang="en" label="English" />
+                </video>
+            </div>
+        ),
     },
     {
-        header: 'Describe code smells',
-        description: 'Optimize your code for best practices',
-        videoSrc:
-            'https://user-images.githubusercontent.com/81499360/266091553-5f0e9919-16bf-476c-b9f1-929f49b8eb61.mp4',
+        title: 'Custom prompts',
+        description: 'Automate your work—like writing docs and tests—with custom prompts',
+        text: (
+            <div className="min-h-[555px] max-w-[738px]">
+                <video
+                    src="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/cody-unit-tests.mp4"
+                    className="rounded-2xl"
+                    autoPlay={true}
+                    loop={true}
+                    muted={true}
+                    playsInline={true}
+                >
+                    <track kind="captions" srcLang="en" label="English" />
+                </video>
+            </div>
+        ),
+    },
+]
+
+const securityCardFeatures = [
+    {
+        icon: <Expand size={24} />,
+        heading: 'Scalable to 500,000+ repositories',
+        paragraph: 'Deploy Cody to your entire codebase for scalable context fetching.',
     },
     {
-        header: 'Define your own custom commands',
-        description: 'Customize Cody for your workflow',
-        videoSrc:
-            'https://user-images.githubusercontent.com/81499360/266091507-0f2f1929-726c-4e94-b037-b36c8409d031.mp4',
+        icon: <ShieldCheck size={24} />,
+        heading: 'Privacy and Security',
+        paragraph: 'Provided LLMs do not retain your data or train on your code. Cody is SOC 2 Type 2 compliant.',
+    },
+    {
+        icon: <Cloud size={24} />,
+        heading: 'Flexible deployment',
+        paragraph: 'Let us host in our single-tenant cloud, or self-host Cody on-premises or in your own VPC.',
+    },
+]
+
+const singleViewCardContent = [
+    {
+        imgSrc: '/assets/cody/authorPlaceholder.png',
+        description:
+            "I'm loving Cody! Got Pro after 15 minutes of trying it out, cancelled GitHub Copilot and never looked back (or for the alternative). Worth every penny!",
+        author: 'Darko Kuzmanovic',
+    },
+    {
+        imgSrc: '/assets/cody/authorPlaceholder.png',
+        description:
+            'Unlimited Claude 3 Opus / Claude 3.5 Sonnet when every other service rate limits. And all for a super low monthly price.',
+        author: 'Lachlan Ross',
+    },
+    {
+        imgSrc: '/assets/cody/authorPlaceholder.png',
+        description:
+            "This is by far the best AI code assistant I have been working with. The most important thing is that it doesn't get in the way and you can choose between different models without having to rely on only one…",
+        author: 'Andrea Tomasini',
     },
 ]
 
 const CodyPage: FunctionComponent = () => {
-    const [isContactModalOpen, setIsContactModalOpen] = useState(false)
     const windowWidth = useWindowWidth()
     const isMobile = windowWidth < breakpoints.lg
-    const isXsMobile = windowWidth < 396
+    const router = useRouter()
+    const { pathname } = router
+    const { openModal } = useAuthModal()
 
-    useEffect(() => {
-        const eventArguments = {
-            description: 'About - Cody page view',
-            source: 'about-cody',
-        }
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        getEventLogger()?.log(EventName.VIEW_ABOUT_CODY, eventArguments, eventArguments)
-    }, [])
+    const source = pathname.slice(1) || 'about-home'
+    const handleOpenModal = (pagePosition: string): void => {
+        captureCustomEventWithPageData('get_cody_onpage_click', pagePosition)
+        openModal(source)
+    }
 
     return (
         <Layout
@@ -73,159 +148,356 @@ const CodyPage: FunctionComponent = () => {
                 title: 'Cody | AI coding assistant',
                 description:
                     'Cody is the most powerful and accurate AI coding assistant for writing, fixing, and maintaining code.',
-                image: 'https://about.sourcegraph.com/cody/cody-og.png',
+                image: 'https://sourcegraph.com/cody/cody-og.png',
             }}
-            headerColorTheme="purple"
-            childrenClassName={isMobile ? 'sg-bg-gradient-cody-mobile' : 'sg-bg-gradient-cody'}
             displayChildrenUnderNav={true}
+            childrenClassName="!-mt-[152px]"
+            className="relative w-full !overflow-x-hidden bg-gray-50"
         >
-            {/* Hero Section */}
-            <ContentSection parentClassName="!py-0 !px-0" className="-mt-8 pt-0 text-center md:mt-0 md:pt-[22px]">
-                <div className="mx-auto w-full px-6 md:w-[849px] lg:w-[895px]">
-                    <div className="center flex items-center justify-center gap-x-4">
-                        <Heading size="h1" className="!text-[53px] text-white md:!text-[62px]">
-                            Meet Cody{' '}
-                        </Heading>
-                        <img
-                            src="/cody/cody-logo.svg"
-                            className="h-[45px] w-[49px] md:h-[50px] md:w-[55px]"
-                            alt="Cody Logo"
-                        />
-                    </div>
-                    <div className="mx-auto w-full pt-6 text-[41px] font-semibold leading-[41px] text-white md:text-[47px] md:leading-[47px]">
-                        We’re building the only AI coding assistant that knows your{' '}
-                        <span className="cody-heading bg-clip-text text-transparent"> entire codebase </span>
-                    </div>
-                    <Heading size="h4" className="mx-auto mt-6 max-w-[637px]  !font-normal text-gray-200">
-                        Cody answers technical questions and writes code directly in your IDE, using your code graph for
-                        context and accuracy.
-                    </Heading>
-                    <div className="mt-8 text-lg font-semibold text-white">
-                        Get Started with Cody <Badge size="small" text="BETA" color="violet" />
-                    </div>
-                    <div className="mx-auto mt-4 flex flex-wrap justify-center gap-2 sm:w-[512px]">
-                        <div className="flex w-[228px] gap-2 md:w-fit">
-                            <ExternalsAuth
-                                className="w-fit  justify-center !font-normal"
-                                authProvider="github"
-                                label="GitHub"
-                                source="about-cody"
-                            />
-                            <ExternalsAuth
-                                className="w-fit justify-center !font-normal"
-                                authProvider="gitlab"
-                                label="GitLab"
-                                source="about-cody"
-                            />
-                        </div>
+            <div className="relative">
+                {/* gradient background */}
+                <div className="pointer-events-none absolute inset-0 -translate-y-32 bg-[linear-gradient(180deg,#E9EDFC_20%,#F9FAFB_90.4%)]" />
 
-                        <ExternalsAuth
-                            className={`w-fit justify-center !font-normal ${isXsMobile ? 'max-w-[228px] flex-1' : ''}`}
-                            authProvider="google"
-                            label="Google"
-                            source="about-cody"
+                <ContentSection parentClassName="relative !pt-4 md:!pt-0 !pb-24 md:!pb-0" className="relative">
+                    {/* blob gradients */}
+                    <div className="pointer-events-none absolute -right-14 -top-14 hidden lg:block">
+                        <img
+                            src="/assets/cody/cody-hero.svg"
+                            alt=""
+                            aria-hidden={true}
+                            className="lg:h-[620px] lg:w-[620px]"
                         />
                     </div>
-                    <p className="mt-4 text-[14px] text-violet-300 opacity-70">
-                        By registering, you agree to our{' '}
-                        <Link
-                            className="text-violet-300 underline"
-                            target="_blank"
-                            href="https://about.sourcegraph.com/terms"
-                        >
-                            Terms of Service
-                        </Link>{' '}
-                        and{' '}
-                        <Link
-                            className="text-violet-300 underline"
-                            target="_blank"
-                            href="https://about.sourcegraph.com/terms/privacy"
-                        >
-                            Privacy Policy
-                        </Link>
-                    </p>
+
+                    <CodyIntroDualTheme
+                        isLight={true}
+                        title="The most informed Code AI"
+                        description="Cody uses the latest LLMs and all your development context to help you understand, write, and fix code faster"
+                        titleSize="text-4xl sm:text-6xl"
+                        descriptionSize="md:text-xl lg:!ml-0"
+                        handleOpenModal={handleOpenModal}
+                        wrapperClassName="relative z-[20] md:z-0 lg:!text-left text-center"
+                        buttonContainerClassName="lg:!justify-start !justify-center"
+                        isVariant={true}
+                    />
+                </ContentSection>
+            </div>
+
+            <ContentSection parentClassName="!pt-4 !pb-4" className="flex flex-col items-center justify-center">
+                <p className="text-center text-base font-normal uppercase leading-[27px] text-gray-400">
+                    Leading dev teams choose Cody for their coding assistant
+                </p>
+
+                <div className="mt-4">
+                    <LogoGrid mainLogo="sofi" header={null} />
                 </div>
             </ContentSection>
 
-            <CodyAutocomplete />
+            <ContentSection className="mt-16 rounded-3xl border border-gray-200 bg-white px-6 py-16 md:mt-0 md:px-16">
+                <div className="bg-white">
+                    <div className="text-gray-700">
+                        <h2 className="mb-3">Developer chat with the most powerful models and context.</h2>
+                        <p className="max-w-4xl text-gray-700 opacity-70">
+                            Experience best-in-class AI chat powered by top LLMs and deep code context. Cody enables{' '}
+                            <Link href="/blog/chat-oriented-programming-in-action">
+                                chat-oriented programming (CHOP)
+                            </Link>{' '}
+                            — a new paradigm for writing code through natural conversation with AI.
+                        </p>
+                    </div>
 
-            <CodyIde />
+                    <div className="mt-10 w-full max-w-[1152px] overflow-hidden rounded-2xl md:h-full md:rounded-none">
+                        <video
+                            src="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/cody-chop-2.mp4"
+                            className="rounded-2xl"
+                            autoPlay={true}
+                            loop={true}
+                            muted={true}
+                            playsInline={true}
+                        >
+                            <track kind="captions" srcLang="en" label="English" />
+                        </video>
+                    </div>
+                </div>
+            </ContentSection>
 
-            <CodyChat />
+            <CodyIde isLight={true} />
 
-            <Heading size="h3" className="mx-auto mt-[96px] hidden max-w-[839px] px-sm text-center text-white md:block">
-                “Cody is a game-changer! It helps me work smarter, write cleaner code, and understand projects faster.
-                My productivity is through the roof, thanks to Cody.”
-            </Heading>
+            <ContentSection parentClassName="py-16 md:!py-28">
+                <CodyTwoColumnSection
+                    subTitle="The best models"
+                    title="Cody uses the latest AI models. Never settle for last-gen."
+                    description="Cody gives you access to the best and latest LLMs. Choose the best one for your use
+                    cases, optimized for speed or power."
+                    extraContent={
+                        <>
+                            <div>
+                                <div className="mb-4 mt-10 text-base font-medium tracking-tight">
+                                    Optimized for Power
+                                </div>
+                                <div className="mb-10 flex max-w-[556px] flex-row flex-wrap gap-4">
+                                    {optimizedPoweritems.map(item => (
+                                        <div key={item.label} className="flex flex-row gap-x-1">
+                                            <IDEBadge
+                                                text={item.label}
+                                                className="w-fit !rounded-[10px] !border !border-gray-200 !bg-gray-100 !px-3 !py-1 !font-sans !text-sm !font-normal  !text-black"
+                                                src={item.iconUrl}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="mb-4 text-base font-medium">Optimized for Speed</div>
+                                <div className="flex max-w-[556px] flex-row flex-wrap gap-4">
+                                    {optimizedSpeed.map(item => (
+                                        <div key={item.label} className="flex flex-row gap-x-1">
+                                            <IDEBadge
+                                                text={item.label}
+                                                className="w-fit !rounded-[10px] !border !border-gray-200 !bg-gray-100 !px-3 !py-1 !font-sans !text-sm !font-normal !text-black"
+                                                src={item.iconUrl}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </>
+                    }
+                    imgSrc="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/llm-dropdown-options.png"
+                />
+            </ContentSection>
+            <ContentSection parentClassName="!py-0">
+                <div className="rounded-2xl border border-gray-200 bg-white px-6 py-16 md:px-20">
+                    <img src="/assets/cody/cody-leidos.svg" alt="leidos logo" className="h-[54.91px] w-[171.471px]" />
+                    <p
+                        className={classNames(
+                            'mt-[70px] mb-6 h-min max-w-[780px] text-[35px] font-normal leading-[43.75px] tracking-tight text-gray-700'
+                        )}
+                    >
+                        “Generative AI is a fast-moving field, and the best model that's out there today may not be the
+                        best model tomorrow…using Cody means we can avoid that LLM lock-in.”
+                    </p>
+                    <div className="mb-[119px] flex h-min w-full flex-col md:mb-0">
+                        <div>
+                            <p className="mb-0 text-base leading-6 tracking-[-0.25px] text-gray-500">Rob Linger</p>
+                            <p className="mb-0 text-sm leading-[21px] text-gray-700">AI Software Architect, Leidos</p>
+                        </div>
+                    </div>
+                </div>
+            </ContentSection>
+            <ContentSection parentClassName="py-16 md:!py-28">
+                <CodyTwoColumnSection
+                    subTitle="The best context"
+                    title="The most contextually-accurate code gen, using your entire codebase and more."
+                    description="Cody uses industry-leading code search to retrieve code context from your entire
+                                    remote codebase. Ask Cody about any repository without limits."
+                    extraContent={
+                        <div className="mt-10">
+                            <Link
+                                href="/blog/how-cody-understands-your-codebase"
+                                title="Case study"
+                                className="btn btn-link btn-link-icon p-0 text-right font-semibold !-tracking-[0.25px] md:mx-0 md:text-left"
+                            >
+                                Read about how Cody understands your entire codebase
+                                <ChevronRightIcon className="link-icon" />
+                            </Link>
+                        </div>
+                    }
+                    videoSrc="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/cody-remote-context.mp4"
+                />
+            </ContentSection>
+            <ContentSection parentClassName="py-16 md:!py-28">
+                <CodyTwoColumnSection
+                    leftClassName="!mb-[8px]"
+                    title="Development context requires more than just code. "
+                    description="Cody integrates with Notion, Jira, Linear, and more. Use non-code context to write code that understands-and meets-all of your requirements."
+                    imgSrc="https://storage.googleapis.com/sourcegraph-assets/cody/website-october-2024/openctx.png"
+                />
+            </ContentSection>
 
-            <div className="mt-6 hidden flex-row items-center justify-center gap-4 md:flex">
-                <img className="" src="/cody/Avatar.svg" alt="Avatar" />
-                <div className="flex-col">
-                    <p className="mb-0 text-lg font-semibold text-gray-200">TINO WENING</p>
-                    <p className="mb-0 text-lg text-gray-200">ENGINEER</p>
+            <ContentSection
+                parentClassName="!pt-[104px] md:!pt-16 !pb-4"
+                className="flex flex-col items-center justify-center"
+            >
+                <p className="text-center text-base font-normal uppercase leading-[27px] text-gray-400">
+                    See why developers love using Cody
+                </p>
+            </ContentSection>
+
+            <ContentSection parentClassName="pb-16 md:!pb-12 !pt-0">
+                <div className="grid gap-4 md:grid-cols-3">
+                    {singleViewCardContent.map(item => (
+                        <div
+                            key={item.author}
+                            className="rounded-2xl border border-gray-200 bg-white px-6 py-8 md:px-8"
+                        >
+                            <p className="mb-0">"{item.description}"</p>
+
+                            <div className="mt-4">
+                                <div className="font-semibold text-blurple-500">{item.author}</div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </ContentSection>
+
+            <ContentSection parentClassName="!py-16 lg:!py-24">
+                <div className="text-center">
+                    <h2 className="mb-4">Upgrade your IDE with powerful AI features</h2>
+                    <p className="text-balance mx-auto mb-10 max-w-2xl text-gray-700 opacity-70">
+                        Code completions, code edits, and customizable prompts use Cody's best models + extensive
+                        context to deliver the most accurate results.
+                    </p>
+                </div>
+
+                <TimedCarousel items={items} />
+
+                {/* <FullWidthTabsCarousel
+                    darkMode={false}
+                    items={items}
+                    parentSectionClassName="!items-start"
+                    content={ContentEnum.Media}
+                    overline={true}
+                    autoAdvance={false}
+                    subtitle="Code completions, code edits, and customizable prompts use Cody’s best models + extensive context to deliver the most accurate results."
+                    cta={false}
+                    title="Upgrade your IDE with powerful AI features"
+                    isVariant={true}
+                /> */}
+            </ContentSection>
+
+            <HowCodyWorks isLight={true} isVariant={true} />
+            <div className="mx-auto max-w-screen-xl !px-6 pt-24 md:pb-4 xl:!px-0">
+                <BentoWithMockup
+                    isVariantStyle={true}
+                    label="Guide"
+                    customTitle="The ultimate Buyer’s Guide for AI coding tools"
+                    imgSrc="/assets/resources/guideMockup.svg"
+                    href="/guides/code-ai-buyers-guide?form_submission_source=code-ai-buyers-guide"
+                    hrefLabel="Get your free copy"
+                />
+            </div>
+
+            <EnterpriseGradeSection
+                parentClassName="!border-0 !bg-none"
+                customHeader="AI at Enterprise scale"
+                description="Cody scales from single developers to the largest enterprises, with flexible deployment and support for enterprise security and compliance."
+                securityCardItems={securityCardFeatures}
+                isCustomSecondLevelContent={true}
+                className="!border-0 !bg-none"
+            />
+
+            <ContentSection>
+                <CodyPlan />
+            </ContentSection>
+            <DevStarterPackModal />
+        </Layout>
+    )
+}
+
+const IDEBadge: FunctionComponent<{ src: string; className: string; text: string }> = ({
+    src,
+    text,
+    className,
+}): JSX.Element => (
+    <Badge
+        text={text}
+        className={className}
+        size="small"
+        iconPosition="start"
+        icon={<img src={src} alt="" aria-hidden={true} />}
+    />
+)
+
+const CodyAbility: FunctionComponent<{ src: string; className?: string; title: string; subTitle: string }> = ({
+    src,
+    title,
+    subTitle,
+    className,
+}): JSX.Element => (
+    <div className={classNames('flex w-[368px] gap-3 bg-white px-3 py-2', className)}>
+        <img src={src} alt="" aria-hidden={true} />
+        <div className="flex flex-col gap-[2px] text-[13px] text-[#181B26]">
+            <div className="mb-0 font-semibold opacity-60">{title}</div>
+            <div className="mb-0 font-normal opacity-70">{subTitle}</div>
+        </div>
+    </div>
+)
+
+const DevStarterPackModal: FunctionComponent = () => {
+    const router = useRouter()
+    const dialogRef = useRef<HTMLDialogElement>(null)
+
+    // Define a type for the dialog element
+    type DialogElement = HTMLDialogElement & { showModal: () => void; close: () => void }
+
+    useEffect(() => {
+        if (router.query.ref === 'devstarterpack' && dialogRef.current) {
+            ;(dialogRef.current as DialogElement).showModal()
+        }
+    }, [router.query])
+
+    const handleClose = (): void => {
+        if (dialogRef.current) {
+            ;(dialogRef.current as DialogElement)?.close?.()
+        }
+    }
+
+    return (
+        <dialog
+            ref={dialogRef}
+            className="relative rounded-lg bg-white px-4 py-8 text-left transition-all sm:my-40 sm:w-full sm:max-w-xl sm:p-16"
+        >
+            <div>
+                <div className="mx-auto flex aspect-video w-32 items-center justify-center rounded-md bg-[#0D121A]">
+                    <video autoPlay={true} loop={false} muted={true} playsInline={true} className="h-24 w-24">
+                        <source src="/assets/cody/hiCodyDark.mp4" type="video/mp4" />
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div className="mt-5 text-center sm:mt-7">
+                    <h2 className="text-gray-900 flex flex-col items-center justify-center gap-2 text-2xl font-semibold leading-6 sm:flex-row">
+                        Dev Starter Pack{' '}
+                        <span className="inline-flex items-center rounded-full bg-vermillion-100 px-2 py-1 text-xs font-medium text-vermillion-500 ring-1 ring-inset ring-vermillion-500/10">
+                            Activated!
+                        </span>
+                    </h2>
+
+                    <div className="mt-4">
+                        <p className="text-balance text-xs text-gray-500 sm:text-sm">
+                            Cody has unmatched context and the latest AI models. Supercharge your coding with AI
+                            autocomplete, chat, inline edits, Smart Apply, and more.
+                        </p>
+                        <p className="text-balance text-xs font-bold text-gray-500 sm:text-sm">
+                            Get 1 free month of Cody Pro! Use the code below:
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <CodyVideoTab
-                icon="/cody/slash-logo.svg"
-                headerText="Run custom and pre-built commands"
-                description={
-                    <p className="mt-[18px] mb-0 text-lg text-gray-200">
-                        Write, describe, fix, and smell code with commands.
-                        <br />
-                        We’re adding new commands frequently, plus you can create & share your own custom commands.
-                    </p>
-                }
-                tabContent={VIDEO_TAB_CONTENT}
-            />
-
-            <ContentSection parentClassName="!pb-0" className="flex flex-col gap-12 md:flex-row md:justify-between">
-                <div className="flex md:max-w-[501px] flex-col w-full">
-                    <Heading size="h2" className="mb-1 !text-4xl text-white">
-                        Sourcegraph powered <span className="cody-heading bg-clip-text text-transparent">context</span>
-                    </Heading>
-                    <p className="mb-0 text-lg text-violet-200">
-                        Sourcegraph’s code graph and analysis tools allow Cody to autocomplete, explain, and edit your
-                        code with additional context.
-                    </p>
-                    <img src="/cody/context_illustration.svg" className="my-6" alt="cody context illustration" />
-                    <Link
-                        href="/whitepaper/cody-context-architecture.pdf"
-                        className="flex items-center gap-[5px] font-semibold text-violet-300 underline hover:text-white"
-                    >
-                        <DownloadIcon className="h-4 w-4" />
-                        Cody Context Architecture whitepaper
-                    </Link>
+            <div className="mt-5 sm:mt-6">
+                <div className="mb-4 rounded bg-gray-100 p-2 text-center font-mono text-sm tracking-tighter sm:text-lg">
+                    DevStarterPack
                 </div>
+            </div>
 
-                <ContextAnimation />
-            </ContentSection>
-            <CodyCta onContactClick={() => setIsContactModalOpen(true)} />
-            <Modal
-                open={isContactModalOpen}
-                handleClose={() => setIsContactModalOpen(false)}
-                modalBackdropClassName="cody-contact-modal"
-                modalClassName="bg-[#632590] border border-opacity-20 border-white px-6 py-[64px] md:px-[80px] md:py-[96px]"
-            >
-                <div className="flex flex-col gap-8 md:flex-row md:gap-10">
-                    <div className="min-w-[200px] max-w-[513px]">
-                        <Heading size="h2" className="!text-4xl text-white">
-                            Get Cody where you work
-                        </Heading>
-                        <p className="mt-4 text-lg text-gray-200">
-                            Cody for Enterprise provides context-aware answers based on your own private codebase.
-                            Contact us through the form to learn more.
-                        </p>
-                    </div>
-                    <div className={classNames('md:min-w-[400px] xl:min-w-[554px]', styles.codyForm)}>
-                        <HubSpotForm
-                            formId="05e46684-9fbc-4c4d-b010-f661f247c4c6"
-                            inlineMessage="Thank you! We'll get back to you soon"
-                        />
-                    </div>
-                </div>
-            </Modal>
-        </Layout>
+            <div className="mt-5 sm:mt-6 sm:grid sm:grid-flow-row-dense sm:grid-cols-2 sm:gap-3">
+                <a
+                    href="https://accounts.sourcegraph.com/sign-in?redirect_to=%2Fcody%2Fsubscription%3FshowCouponCodeAtCheckout"
+                    className="inline-flex w-full justify-center rounded-md bg-blurple-500 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blurple-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blurple-600 sm:col-start-2"
+                >
+                    Redeem free month
+                </a>
+
+                <button
+                    type="button"
+                    onClick={handleClose}
+                    className="text-gray-900 mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold shadow-sm ring-1 ring-inset ring-gray-200 hover:bg-gray-50 sm:col-start-1 sm:mt-0"
+                >
+                    No thanks
+                </button>
+            </div>
+        </dialog>
     )
 }
 

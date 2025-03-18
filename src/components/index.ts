@@ -12,7 +12,6 @@ export { CallToActionWithCody } from './cta/CallToActionWithCody'
 export { CustomerLogos } from './CustomerLogos'
 export { DemioForm } from './DemioForm'
 export { Figure } from './Figure'
-export { Heading } from './Heading'
 export { Hero } from './Hero'
 export { HubSpotForm, type HubSpotFormProps } from './HubSpotForm'
 
@@ -43,11 +42,12 @@ export {
 } from './cody/cody-illustrations'
 
 export { AuthenticateModalContent } from './AuthenticateModalContent'
-export { ExternalsAuth } from './cta/ExternalsAuth'
+export { ExternalProvider } from './cta/ExternalProvider'
 export { EmailAuth } from './cta/EmailAuth'
+export { IdeModalContent } from './IdeModalContent'
 
 // Carousels
-export { CustomCarousel, TabCarousel, QuoteCarousel, VideoCarousel } from './Carousels'
+export { CustomCarousel, TabCarousel, QuoteCarousel, VideoCarousel, InfiniteCarousel } from './Carousels'
 
 // Case Studies
 export {
@@ -79,14 +79,17 @@ export { FeatureRoadMap } from './Own'
 
 // Cody
 export { CodyFeatureCard } from './CodyFeatureCard'
-export { CodySteps } from './cody/CodySteps'
 export { CodebaseAwareIntelligence } from './cody/CodebaseAwareIntelligence'
 export { AiGeneratedCode } from './cody/AiGeneratedCode'
-export { CodyTweets } from './cody/CodyTweets'
 export { CodyVideoTab } from './cody/CodyVideoTab'
+export { CodyImageTab } from './cody/CodyImageTab'
 export { CodyIde } from './cody/CodyIde'
 export { CodyAnimation } from './CodyAnimation/CodyAnimation'
 export { CodyAutocomplete } from './cody/CodyAutocomplete'
 export { CodyChat } from './cody/CodyChat'
 export { ContextAnimation } from './CodyAnimation/ContextAnimation'
 export { CodyCta } from './cta/CodyCta'
+export * from './Pricing/index'
+export { CodyPartners } from './cody/CodyPartners'
+export { CodyTestimonials } from './cody/CodyTestimonials'
+export { SourcegraphPowered } from './cody/SourcegraphPowered'

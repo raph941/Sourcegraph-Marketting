@@ -3,55 +3,71 @@ import { FunctionComponent } from 'react'
 import ChevronRightIcon from 'mdi-react/ChevronRightIcon'
 import Link from 'next/link'
 
-import {
-    ContentSection,
-    IntegrationsSection,
-    Layout,
-    TwoColumnSection,
-    Heading,
-    CustomerLogos,
-    Video,
-} from '../components'
+import { ContentSection, Layout, TwoColumnSection, Video } from '../components'
+import { CodeSearchCard } from '../components/Code-search/CodeSearchCard'
+import { LogoGrid } from '../components/cody/LogoGrid'
+import { captureCustomEventWithPageData } from '../lib/utils'
+import { TelemetryProps } from '../telemetry'
 
-export const CodeSearchPage: FunctionComponent = () => (
+const testimonials = [
+    {
+        name: 'Todd Turner, Platform Engineer',
+        avatar: 'TT',
+        role: 'Platform Engineer',
+        companyName: 'Nine',
+        comment: [
+            'Sourcegraph helped me answer a question in like 5 seconds flat this afternoon.',
+            'Normally I probably would have bugged a bunch of people, but the overview of “here is that snippet, and the list of repos using it” made it self-served.',
+        ],
+    },
+    {
+        name: 'Joe Bingham',
+        avatar: 'JB',
+        role: 'Software Engineer',
+        companyName: 'Workiva',
+        comment: [
+            'Updating all of our repositories with Batch Changes saves time, is less error-prone, and gives us confidence that everything is going to plan.',
+        ],
+    },
+    {
+        name: 'Chris Roderick',
+        avatar: 'CR',
+        role: 'Applications and Services Section Leader',
+        companyName: 'CERN',
+        comment: [
+            'Sourcegraph lets us make informed decisions on how to evolve our codebase.',
+            'For example, a library owner knows exactly how all other developers use their API, and can therefore make educated decisions on how to evolve it.',
+        ],
+    },
+]
+
+const codeHosts = [
+    { name: 'GitHub', icon: '/code-search/code-hosts/github.svg' },
+    { name: 'GitLab', icon: '/code-search/code-hosts/gitlab.svg' },
+    { name: 'Perforce', icon: '/code-search/code-hosts/perforce.svg' },
+    { name: 'Bitbucket', icon: '/code-search/code-hosts/bitbucket.svg' },
+    { name: 'Gerrit', icon: '/code-search/code-hosts/gerrit.svg' },
+    { name: 'any Git-based code host', icon: '/code-search/code-hosts/any-git.svg' },
+]
+
+export const CodeSearchPage: FunctionComponent<TelemetryProps> = ({ telemetryRecorder }) => (
     <Layout
         meta={{
-            title: 'Sourcegraph | Code Search',
+            title: 'Code Search | Grok your entire codebase with Sourcegraph',
             description:
                 'Code Search helps devs explore their codebase, make large-scale migrations, and fix security issues faster—especially in large, distributed codebases.',
-            image: 'https://about.sourcegraph.com/code-search/code-search-og.png',
+            image: 'https://sourcegraph.com/code-search/code-search-og.png',
         }}
-        hero={
-            <>
-                <ContentSection
-                    parentClassName="!py-0 !px-sm overflow-x-clip relative z-20"
-                    className="grid grid-cols-1 pb-8 pt-20 md:grid-cols-2 md:pt-28 md:pb-16"
-                >
-                    <div className="flex w-full flex-col">
-                        <Heading size="h1" className="text-white md:text-start md:!text-[52px]">
-                            Find, understand, and fix your code
-                        </Heading>
-
-                        <p className="pt-6 pb-5 text-3xl text-gray-200">
-                            Code Search, along with complementary tools, helps devs find, fix, and onboard to new code
-                            quickly.
-                        </p>
-
-                        <Link href="/contact/request-info" className="btn btn-inverted-primary w-fit">
-                            Meet with a product expert
-                        </Link>
-                    </div>
-                </ContentSection>
-
-                <div className="absolute -right-[272px]  hidden h-[579px] w-[90%] bg-[url('/code-search/code-search-hero.svg')] bg-contain  bg-center bg-no-repeat md:top-[110px] md:flex  lg:top-[142px] lg:w-[80%] xl:top-[176px] xl:-right-[414px] xl:w-full" />
-            </>
-        }
-        headerColorTheme="purple"
-        className="sg-bg-code-search relative overflow-hidden"
+        hero={<CodeSearchHero />}
+        className="bg-gray-50"
     >
-        <CustomerLogos className="-px-sm !bg-transparent md:pt-0 md:pb-16 lg:pt-32" monochrome={true} dark={true} />
+        {/* partners ----------------------------------------------------------------- */}
+        {/* ------------------------------------------------------------------------------- */}
+        <div className="py-16">
+            <LogoGrid mainLogo="sofi" />
+        </div>
 
-        <ContentSection parentClassName="!pb-0 md:!pb-24" className="md:pt-12">
+        <ContentSection className="lg:pl-6" parentClassName="lg:!py-24">
             <TwoColumnSection
                 className="xl:!gap-x-[100px]"
                 centerContent={true}
@@ -65,56 +81,60 @@ export const CodeSearchPage: FunctionComponent = () => (
                         }}
                         title="Sourcegraph Code Search"
                         loop={true}
-                        className="rounded-[5px] object-cover shadow-video lg:h-[401px] lg:w-[577px]"
+                        className="h-[432px] rounded-[5px] border border-gray-200 object-cover"
+                        telemetryRecorder={telemetryRecorder}
                     />
                 }
                 rightColumn={
-                    <div className="">
-                        <p className="text-lg font-semibold text-white">CODE SEARCH</p>
-                        <h2 className="mb-6 text-white">Find and fix code in any code host, language, or repository</h2>
-                        <ul className="text-lg text-gray-200">
-                            <li className="mb-4">
-                                Be more efficient by reusing high-quality code. Find code across thousands of
-                                repositories and multiple code hosts in seconds.
+                    <div>
+                        <p className="color-[#0F111A] mb-4 text-lg font-semibold !tracking-[0.54px]">CODE SEARCH</p>
+                        <h2 className="color-[#0F111A] mb-6">
+                            Find and fix code in any code host, language, or repository
+                        </h2>
+                        <ul className="mb-6 text-lg leading-[27px] tracking-[-0.25px] text-[#343A4D]">
+                            <li className="mb-3">
+                                Onboard to new repositories and projects more quickly by searching and navigating code
+                                from Sourcegraph’s web UI.
                             </li>
-                            <li className="mb-4">
-                                Resolve issues and incidents faster by pinpointing root causes with symbol, commit, and
-                                diff searches.
+                            <li className="mb-3">
+                                Resolve vulnerabilities and incidents faster. Locate every instance of bad code using
+                                symbol, commit, and diff searches.
                             </li>
-                            <li className="mb-4">
-                                Discover every instance of vulnerable or buggy code in milliseconds and have complete
-                                confidence in what's in your codebase.
+                            <li>
+                                Efficiently reuse existing code. Find code across thousands of repositories and multiple
+                                code hosts in seconds.
                             </li>
                         </ul>
                         <Link
                             href="/case-studies/nutanix-fixed-log4j-with-sourcegraph"
-                            className="flex font-semibold text-white"
+                            className="btn-link btn-link-icon font-semibold leading-[22.4px]"
                         >
-                            Read how Nutanix used Code Search to mitigate Log4j vulnerabilities <ChevronRightIcon />
+                            Read how Nutanix used Code Search to mitigate Log4j vulnerabilities
+                            <ChevronRightIcon className="link-icon" />
                         </Link>
                     </div>
                 }
             />
         </ContentSection>
 
-        <ContentSection parentClassName="!pb-0 md:!pb-24">
+        <ContentSection className="lg:pl-6" parentClassName="!py-24 ">
             <TwoColumnSection
                 className="xl:!gap-x-[113px]"
                 leftColumn={
-                    <div className="">
-                        <p className="text-lg font-semibold text-white">CODE NAVIGATION</p>
-                        <h2 className="mb-6 text-white">Understand your code and its dependencies</h2>
-                        <ul className="text-lg text-gray-200">
-                            <li className="mb-4">
+                    <div>
+                        <p className="color-[#0F111A] mb-4 text-lg font-semibold !tracking-[0.54px]">CODE NAVIGATION</p>
+                        <h2 className="color-[#0F111A] mb-6">Understand your code and its dependencies</h2>
+                        <ul className="mb-6 text-lg leading-[27px] tracking-[-0.25px] text-[#343A4D]">
+                            <li className="mb-3">
                                 Onboard to codebases faster with cross-repository code navigation features like “Go to
-                                definition” and "Find references."
+                                definition” and “Find references.”
                             </li>
-                            <li className="mb-4">
+                            <li className="mb-3">
                                 Complete code reviews, get up to speed on unfamiliar code, and determine the impact of
                                 code changes with the confidence of compiler-accurate code navigation.
                             </li>
-                            <li className="mb-4">
-                                Determine root causes quickly with precise code navigation that tracks dependencies and
+                            <li>
+                                Determine root causes quickly with code navigation that tracks dependencies and
                                 references across repositories.
                             </li>
                         </ul>
@@ -129,13 +149,14 @@ export const CodeSearchPage: FunctionComponent = () => (
                         }}
                         title="Sourcegraph Notebooks"
                         loop={true}
-                        className="rounded-[5px] object-cover shadow-video lg:h-[401px] lg:w-[577px]"
+                        className="h-[432px] rounded-[5px] border border-gray-200 object-cover lg:h-[401px] lg:w-[577px]"
+                        telemetryRecorder={telemetryRecorder}
                     />
                 }
             />
         </ContentSection>
 
-        <ContentSection parentClassName="!pb-0 md:!pb-24">
+        <ContentSection className="lg:pl-6" parentClassName="!py-24">
             <TwoColumnSection
                 className="xl:!gap-x-[100px]"
                 centerContent={true}
@@ -148,57 +169,56 @@ export const CodeSearchPage: FunctionComponent = () => (
                         }}
                         loop={true}
                         title="Batch Changes: How it works"
-                        className="rounded-[5px] object-cover shadow-video lg:h-[324px] lg:w-[577px]"
+                        className="h-[432px] rounded-[5px] border border-gray-200 object-cover lg:h-[324px] lg:w-[577px]"
+                        telemetryRecorder={telemetryRecorder}
                     />
                 }
                 rightColumn={
-                    <div className="">
-                        <p className="text-lg font-semibold text-white">BATCH CHANGES</p>
-                        <h2 className="mb-6 text-white">Automate large-scale code changes</h2>
-                        <ul className="text-lg text-gray-200">
-                            <li className="mb-4">
-                                Find all occurrences of code to change with Code Search and programmatically make those
-                                changes by creating a declarative specification file.
+                    <div>
+                        <p className="color-[#0F111A] mb-4 text-lg font-semibold !tracking-[0.54px]">BATCH CHANGES</p>
+                        <h2 className="color-[#0F111A] mb-6">Automate large-scale code changes</h2>
+                        <ul className="mb-6 text-lg leading-[27px] tracking-[-0.25px] text-[#343A4D]">
+                            <li className="mb-3">
+                                Find all occurrences of code to change with Code Search and make every change with a
+                                single, declarative spec file.
                             </li>
-                            <li className="mb-4">
-                                Automatically track changeset lifecycle status, like check state, reviews, and merge
-                                status via the Sourcegraph UI so you can get the changesets merged.
+                            <li>
+                                Automatically track changeset lifecycle status via the Sourcegraph UI. See check state,
+                                reviews, and merge status to follow changesets to completion.
                             </li>
                         </ul>
+
                         <Link
                             href="/case-studies/indeed-accelerates-development-velocity"
-                            className="flex font-semibold text-white"
+                            className="btn-link btn-link-icon font-semibold leading-[22.4px]"
                         >
-                            Read how Indeed uses Batch Changes to accelerate development <ChevronRightIcon />
+                            Read how Indeed uses Batch Changes to accelerate development
+                            <ChevronRightIcon className="link-icon" />
                         </Link>
                     </div>
                 }
             />
         </ContentSection>
 
-        <ContentSection className="md:pb-4">
+        <ContentSection className="lg:pl-6" parentClassName="lg:!pt-24 !pt:10 !pb-10 lg:!pb-28">
             <TwoColumnSection
-                className="xl:!gap-x-[113px]"
                 centerContent={true}
                 leftColumn={
-                    <div className="">
-                        <p className="text-lg font-semibold text-white">CODE INSIGHTS</p>
-                        <h2 className="mb-6 text-white">Track what really matters to you and your team</h2>
-                        <ul className="text-lg text-gray-200">
-                            <li className="mb-4">
-                                Make data-driven decisions using visualizations based on the power and accuracy of
-                                Sourcegraph Code Search.
+                    <div>
+                        <p className="color-[#0F111A] mb-4 text-lg font-semibold tracking-[3%]">CODE INSIGHTS</p>
+                        <h2 className="color-[#0F111A] mb-6">Track meaningful insights across your codebase</h2>
+                        <ul className="mb-6 text-lg leading-[27px] tracking-[-0.25px] text-[#343A4D]">
+                            <li className="mb-3">
+                                Make data-driven decisions using visualizations of your entire codebase. Simply write a
+                                search query and turn it into a chart.
                             </li>
-                            <li className="mb-4">
+                            <li>
                                 Engineering teams can track migrations and deprecations, ensure removal of security
-                                vulnerabilities, track code smells and health, and much more.
+                                vulnerabilities, and track code smells and health from visual dashboards.
                             </li>
                         </ul>
-                        <Link
-                            href="https://about.sourcegraph.com/blog/announcing-code-insights"
-                            className="flex font-semibold text-white"
-                        >
-                            Learn more about Code Insights <ChevronRightIcon />
+                        <Link href="/code-insights" className="btn-link btn-link-icon font-semibold leading-[22.4px]">
+                            Learn more about Code Insights <ChevronRightIcon className="link-icon" />
                         </Link>
                     </div>
                 }
@@ -210,35 +230,108 @@ export const CodeSearchPage: FunctionComponent = () => (
                         }}
                         title="Code Insights"
                         loop={true}
-                        className="rounded-lg object-cover shadow-video lg:h-[324px] lg:w-[577px]"
+                        className="h-[526px] rounded-lg border border-gray-200 object-cover lg:h-[324px] lg:w-[577px]"
+                        telemetryRecorder={telemetryRecorder}
                     />
                 }
             />
         </ContentSection>
 
-        <IntegrationsSection />
-        <ContentSection background="white" className="py-4">
-            <div className="sg-bg-code-search-cta mx-auto flex w-full max-w-[1092px] flex-col items-center justify-between gap-x-8 rounded-lg bg-no-repeat py-16  px-6 shadow-cta md:rounded-2xl md:bg-[lightgray] md:bg-[url('/code-search/cta-background.png')] md:bg-cover md:bg-center md:py-24 md:px-20 lg:flex-row">
-                <div className="max-w-[516px] pb-16 md:pb-0">
-                    <Heading size="h2" className="mb-2  !text-4xl text-white">
-                        Try Sourcegraph on your code
-                    </Heading>
-                    <p className="max-w-2xl text-lg text-gray-200">
-                        Experience code intelligence with a free trial for you and your team, or search millions of open
-                        source repositories.
-                    </p>
-                </div>
-                <div className="flex w-full flex-col items-start justify-start gap-4 md:w-fit md:flex-row md:items-center md:justify-center">
-                    <Link
-                        className="w-full rounded-[5px] border border-gray-200 py-2 px-6 text-center text-gray-200 hover:border-white hover:text-white md:w-fit"
-                        href="/demo"
-                    >
-                        Meet with a product expert
-                    </Link>
+        <ContentSection
+            parentClassName="!pb-0 lg:!pt-14 !pt-6"
+            className="!my-0 flex w-full  flex-col gap-x-12 !p-0 md:flex-col lg:pl-6"
+        >
+            <div className="mx-auto flex w-full flex-col gap-x-8 gap-y-8 lg:flex-row">
+                <h2 className="text-center lg:pl-6 lg:text-left">Code Search works with:</h2>
+                <div className="mx-auto flex w-full max-w-[797px] flex-wrap items-center justify-center gap-16">
+                    {codeHosts.map(codeHost => (
+                        <div className="flex items-center gap-x-4" key={codeHost.name}>
+                            <img className="h-[50px] w-[50px]" src={codeHost.icon} alt={codeHost.name} />{' '}
+                            <h3 className="text-gray-600">{codeHost.name}</h3>
+                        </div>
+                    ))}
                 </div>
             </div>
         </ContentSection>
+
+        <ContentSection parentClassName="!pb-0 !pt-24" className="w-full lg:pl-6">
+            <div className="gap-y-[30px flex w-full flex-col items-start justify-between gap-x-0 gap-y-6 md:flex-row md:gap-x-[30px]">
+                {testimonials.map(testimonial => (
+                    <div
+                        key={testimonial.name}
+                        className="w-full flex-1 rounded-[10px] border border-gray-200 bg-white p-5 md:items-start"
+                    >
+                        <div className="mb-4 flex items-center">
+                            <div className="mr-[10px] flex h-10 w-10 items-end justify-center rounded-full bg-gradient-to-b  from-[#CD76F1]  to-[#EE8EA1] pb-0.5">
+                                <h3 className="text-white">{testimonial.avatar}</h3>
+                            </div>
+
+                            <div>
+                                <p className="m-0 mb-[-5px] text-base font-normal leading-6 tracking-[-0.25px] text-violet-500">
+                                    {testimonial.name}
+                                </p>
+                                <div className="text-sm font-normal leading-[19.88px] text-gray-600">
+                                    {testimonial.role}, {testimonial.companyName}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="text-lg font-normal leading-[27px] tracking-[-0.25px] text-gray-700">
+                            {testimonial.comment.map(paragraph => (
+                                <p key={paragraph} className="m-0 p-0">
+                                    {paragraph}
+                                </p>
+                            ))}
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </ContentSection>
+        <CodeSearchCard />
     </Layout>
+)
+
+const CodeSearchHero: FunctionComponent = () => (
+    <ContentSection className="flex items-center justify-center" parentClassName="!py-0">
+        <div className="mx-auto flex flex-col items-center justify-center text-center">
+            <div className="mx-auto flex flex-col items-center pb-16 pt-8 md:w-[828px] md:pb-[63px] md:pt-16">
+                <div className="mb-[8px] flex items-center justify-start gap-[8px]">
+                    <img src="/codesearch-logomark-default.svg" alt="Cody Logo" className="w-[40px h-[40px]" />
+                    <h3>Code Search</h3>
+                </div>
+
+                <div className="container mx-auto mb-6 grid gap-8 text-center">
+                    <h1 className="color-[#0F111A] pt-16 md:pt-0">Grok your entire codebase</h1>
+                </div>
+                <h3 className="mb-10 text-gray-500 md:mb-8 md:px-6">
+                    Code Search makes it easy to find code, make large-scale changes, and track insights across
+                    codebases of any scale and with any number of code hosts.
+                </h3>
+                <div className="mx-auto flex flex-row flex-wrap justify-center gap-[8px] rounded-[6px]">
+                    <Link
+                        href="/contact/request-info"
+                        className="btn btn-primary"
+                        onClick={() => captureCustomEventWithPageData('contact_sales_onpage_click')}
+                    >
+                        Book a demo
+                    </Link>
+                    <Link
+                        href="/pricing?product=codeSearch"
+                        className="btn btn-secondary w-[215px] text-center sm:w-fit"
+                    >
+                        See pricing
+                    </Link>
+                </div>
+            </div>
+            <div className=" relative h-auto w-full max-w-[948px] ">
+                <div className="absolute top-0 bottom-0 right-0 left-0 bg-gradient-to-r from-[#4AC1E8] via-[#A112FF] to-[#FF5543] opacity-20 blur-xl" />
+                <img
+                    className=" relative mx-auto block w-full md:px-6"
+                    src="/code-search/code-search.svg"
+                    alt="Cody Product logo"
+                />
+            </div>
+        </div>
+    </ContentSection>
 )
 
 export default CodeSearchPage

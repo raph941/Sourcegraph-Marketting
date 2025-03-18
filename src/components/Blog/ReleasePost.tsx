@@ -4,8 +4,8 @@ import classNames from 'classnames'
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon'
 import { MDXRemote } from 'next-mdx-remote'
 
-import { Alert, Badge, Figure, Heading, Video, YouTube } from '..'
-import { buttonStyle, buttonLocation } from '../../data/tracking'
+import { Alert, Badge, Figure, Video, YouTube } from '..'
+import { buttonLocation, buttonStyle } from '../../data/tracking'
 import { PostComponentProps } from '../../interfaces/posts'
 
 import { BylineAndDate } from './BylineAndDate'
@@ -27,18 +27,42 @@ export const ReleasePost: FunctionComponent<Props> = ({
 }) => {
     const body = (
         <>
-            {content && <MDXRemote {...content} components={components as ReleaseComponents} />}
+            {content && (
+                <div
+                    className={classNames(
+                        'mt-8',
+                        'min-h-[60vh]',
+                        styles.content,
+                        'prose',
+                        'xl:prose-lg',
+                        'leading-relaxed',
+                        'xl:leading-relaxed',
+                        'prose-headings:font-semibold',
+                        'prose-headings:mb-2.5',
+                        'prose-a:text-violet-500',
+                        'prose-a:no-underline',
+                        'hover:prose-a:text-violet-400',
+                        'hover:prose-a:underline',
+                        'prose-img:rounded-lg',
+                        'prose-img:!mt-8',
+                        'prose-code:before:hidden',
+                        'prose-code:after:hidden'
+                    )}
+                >
+                    <MDXRemote {...content} components={components as ReleaseComponents} />
+                </div>
+            )}
 
             {frontmatter.changelogItems?.length ? (
                 <div>
-                    <h3 className={`m-0 pt-sm pb-xxs ${styles['changelog-header']}`}>Changelog highlights</h3>
+                    <h3 className={`m-0 pt-6 pb-2 ${styles['changelog-header']}`}>Changelog highlights</h3>
 
                     <ol className="ml-0 mb-2 list-none border-y border-solid border-gray-200">
                         {frontmatter.changelogItems?.map(({ url, category, description }) => (
                             <li key={url} className="m-0 bg-white p-0 [&:not(:last-child)]:border-b-1">
                                 <a
                                     href={url}
-                                    className={`${styles.item} block px-xs py-xxs text-black md:flex`}
+                                    className={`${styles.item} block px-4 py-2 text-black md:flex`}
                                     title={`${category}: ${description}`}
                                     data-button-style={buttonStyle.text}
                                     data-button-location={buttonLocation.body}
@@ -62,12 +86,12 @@ export const ReleasePost: FunctionComponent<Props> = ({
 
     return (
         <Tag className={className}>
-            <Heading as="h1" size="h2" className="!font-grotesk">
-                {frontmatter.title}
-            </Heading>
+            <h1 className="text-blog-h1">{frontmatter.title}</h1>
 
             {(frontmatter.authors?.length || frontmatter.publishDate) && (
-                <BylineAndDate authors={frontmatter.authors} publishDate={frontmatter.publishDate} />
+                <div className="mt-3">
+                    <BylineAndDate authors={frontmatter.authors} publishDate={frontmatter.publishDate} />
+                </div>
             )}
 
             {body}
@@ -76,21 +100,21 @@ export const ReleasePost: FunctionComponent<Props> = ({
 }
 
 const CommonLinks: React.FunctionComponent<{ className?: string }> = ({ className }) => (
-    <ul className={classNames(className, 'mb-0 ml-0 list-none flex-col flex-wrap gap-md md:flex md:flex-row')}>
+    <ul className={classNames(className, 'mb-0 ml-0 list-none flex-col flex-wrap gap-8 md:flex md:flex-row')}>
         <li>
-            <a href="https://docs.sourcegraph.com/admin/install" className="text-gray-400">
+            <a href="https://sourcegraph.com/docs/admin/install" className="text-gray-400">
                 How to install
             </a>
         </li>
         <li>
-            <a href="https://docs.sourcegraph.com/admin/updates" className="text-gray-400">
+            <a href="https://sourcegraph.com/docs/admin/updates" className="text-gray-400">
                 How to upgrade
             </a>
         </li>
         <li className="flex-1" />
         <li>
             <a
-                href="https://sourcegraph.com/github.com/sourcegraph/sourcegraph/-/blob/CHANGELOG.md"
+                href="https://sourcegraph.com/changelog"
                 className="text-gray-400"
             >
                 Full changelog

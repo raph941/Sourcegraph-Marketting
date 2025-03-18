@@ -1,13 +1,13 @@
 import { FunctionComponent } from 'react'
 
-import { Heading, Layout, CustomerLogos, ContentSection, YouTube } from '../../components'
+import { Layout, CustomerLogos, ContentSection, YouTube } from '../../components'
 import { BlogListItem } from '../../components/Blog/BlogListItem'
 import { DownloadAppCallToActionSection } from '../../components/cta/DownloadAppCallToActionSection'
 
 const blogs = [
     {
         title: 'Cheating is All You Need',
-        href: 'https://about.sourcegraph.com/blog/cheating-is-all-you-need',
+        href: 'https://sourcegraph.com/blog/cheating-is-all-you-need',
         description: (
             <p className="text-gray-200">
                 There is something legendary and historic happening in software engineering, right now as we speak, and
@@ -18,13 +18,13 @@ const blogs = [
     },
     {
         title: 'Sourcegraph 5.0 release post',
-        href: 'https://about.sourcegraph.com/blog/release/5.0',
+        href: 'https://sourcegraph.com/blog/release/5.0',
         description: <p className="text-gray-200">Sourcegraph 5.0 introduces more than 20 updates and improvements.</p>,
         imageSrc: 'https://storage.googleapis.com/sourcegraph-assets/blog/release-post/5.0/sourcegraph-5-0-hero.png',
     },
     {
         title: 'Announcing Sourcegraph Own',
-        href: 'https://about.sourcegraph.com/blog/announcing-sourcegraph-own',
+        href: 'https://sourcegraph.com/blog/announcing-sourcegraph-own',
         description: (
             <p className="text-gray-200">
                 Sourcegraph Own, available now as an experimental feature, integrates evergreen code ownership with
@@ -35,7 +35,7 @@ const blogs = [
     },
     {
         title: 'Announcing the Sourcegraph app',
-        href: 'https://about.sourcegraph.com/blog/announcing-sourcegraph-app',
+        href: 'https://sourcegraph.com/blog/announcing-sourcegraph-app',
         description: (
             <p className="text-gray-200">
                 The Sourcegraph app, now in beta, brings code intelligence to your local machine in a free, lightweight
@@ -57,11 +57,10 @@ declare global {
 
 const Starship: FunctionComponent = () => (
     <Layout
-        headerColorTheme="purple"
-        childrenClassName="sg-bg-gradient-starship"
+        headerColorTheme="dark"
         displayChildrenUnderNav={true}
         meta={{
-            image: 'https://about.sourcegraph.com/starship/starship_og.png',
+            image: 'https://sourcegraph.com/starship/starship_og.png',
             title: 'Code intelligence + AI = 🤯',
             description: 'Sourcegraph 5.0, the latest release of our code intelligence platform, is now available.',
         }}
@@ -72,7 +71,7 @@ const Starship: FunctionComponent = () => (
                 className="h-[67.71px] w-[61.71px] md:h-24 md:w-24"
                 alt="Sourcegraph"
             />
-            <p className="ml-[17px] font-grotesk text-[40px] font-light leading-[64px] tracking-[-1px] text-white md:ml-[22px] md:text-[86px] md:leading-[110px]">
+            <p className="font-grotesk ml-[17px] text-[40px] font-light leading-[64px] tracking-[-1px] text-white md:ml-[22px] md:text-[86px] md:leading-[110px]">
                 5.0
             </p>
             <div className="ml-2 mt-2.5 h-[56.39px] w-[0.96px] bg-white sm:ml-5 md:h-[88px] md:w-[1.5px]" />
@@ -85,16 +84,11 @@ const Starship: FunctionComponent = () => (
 
         <ContentSection className="relative text-center md:-mt-[22px]" parentClassName="!py-0">
             <div className="mx-auto mb-[48px] flex max-w-[960px] flex-col md:mb-24">
-                <Heading
-                    size="h1"
-                    className="max-w-[860px] self-center !font-grotesk !text-[36px] font-medium leading-[55px] tracking-[-1px] text-white md:text-[52px] md:leading-[73px]"
-                >
-                    Code intelligence + AI = 🤯
-                </Heading>
-                <Heading size="h3" className="mt-6 max-w-[860px] self-center font-normal text-gray-200 md:mt-4">
+                <h1 className="max-w-[860px] self-center !font-display text-white">Code intelligence + AI = 🤯</h1>
+                <h3 className="mt-6 max-w-[860px] self-center text-gray-200 md:mt-4">
                     Sourcegraph 5.0, the latest release of our code intelligence platform, is now available. Watch the
                     livestream.
-                </Heading>
+                </h3>
                 <YouTube
                     title="Starship Talks: A new era for software and how it’s built"
                     id="tggj3o1pL5U"
@@ -109,9 +103,7 @@ const Starship: FunctionComponent = () => (
         </ContentSection>
 
         <ContentSection className="mb-16 pt-[16px] md:mb-24" parentClassName="!py-0">
-            <Heading size="h3" className="mb-6 max-w-[604px] text-white md:mb-16">
-                Learn more about Sourcegraph 5.0
-            </Heading>
+            <h3 className="mb-6 max-w-[604px] text-white md:mb-16">Learn more about Sourcegraph 5.0</h3>
             {blogs.map(blog => (
                 <BlogListItem key={blog.title} {...blog} />
             ))}
@@ -119,14 +111,11 @@ const Starship: FunctionComponent = () => (
 
         {/* CTA */}
         <ContentSection parentClassName="relative !pt-0 !px-0" className="flex flex-col items-center text-white">
-            <Heading
-                size="h2"
-                className="max-w-[728px] px-sm text-center !font-grotesk !text-4xl font-medium !tracking-[-1px]"
-            >
+            <h2 className="max-w-[728px] px-6 text-center !font-display">
                 Over 1.8M engineers use Sourcegraph to build software you rely on
-            </Heading>
+            </h2>
 
-            <CustomerLogos dark={true} monochrome={true} className="-px-sm !bg-transparent md:pb-5xl" />
+            <CustomerLogos dark={true} monochrome={true} className="-px-6 !bg-transparent md:pb-24" />
 
             <DownloadAppCallToActionSection colorTheme="dark" />
 

@@ -1,9 +1,9 @@
 .content img,
-			.content object,
-			/* Gif-like videos */
-			.content video[autoplay][loop][muted]:not([controls]) {
-    width: 100%;
-    margin: 3rem auto 2rem auto;
+.content object,
+/* Gif-like videos */
+.content video[autoplay][loop][muted]:not([controls]) {
+    /* width: 100%; */
+    /* margin: 3rem auto 2rem auto; */
     display: block;
     border-style: none;
     height: auto; /* Allow providing the media width and height as HTML attributes for aspect-ratio calculation to avoid layout shift */
@@ -50,6 +50,7 @@
     background: var(--sg-color-gray-100);
     color: var(--sg-color-blue-500);
     border: 1px solid var(--sg-color-gray-200);
+    white-space: pre-wrap;
 }
 
 .content blockquote {
@@ -62,20 +63,27 @@
     border: none;
 }
 
-.content p {
+/* .content p {
     line-height: 1.8;
     margin-bottom: 1.25rem;
+} */
+
+.content br {
+    display: none;
 }
 
 .content ul,
 .content ol {
-    line-height: 1.8;
+    line-height: 1.2;
     padding-left: 0;
 }
 .content li {
     margin-left: 1rem;
     padding-left: 0.5rem;
     margin-bottom: 0.5rem;
+}
+.content li > p {
+    margin-top: 0;
 }
 
 /* Fixes uneven or excessive spacing in lists (we only want the li's padding, not the p's also). */

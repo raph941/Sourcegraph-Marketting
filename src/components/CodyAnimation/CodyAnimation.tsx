@@ -1,6 +1,8 @@
 'use client'
 import { FunctionComponent, useState, useCallback, useRef, useEffect } from 'react'
 
+import classNames from 'classnames'
+
 import { breakpoints } from '../../data/breakpoints'
 import { useInViewCody } from '../../hooks/useInViewCody'
 import { useWindowWidth } from '../../hooks/windowWidth'
@@ -17,29 +19,35 @@ const timingFrames = {
 }
 
 const codes: string[] = [
-    'function bubbleSort(array) {',
-    '   let swapped;',
-    `   do {
-       swapped = false;
-       for (let i = 0; i < array.length - 1; i++) {
-           if (array[i] > array [i+1]) {
-              let temp = array[i];
-              array[i] = array[i+1];
-              array[i+1] = temp;
-              swapped = true;
-           }
-       }
-   } while (swapped);
-   return array;
-`,
+    `// UpdateSubscriptionOptions describes a change to apply to a subscription
+// Any nil field will be left unchanged
+type UpdateSubscriptionOptions struct {
+  NewSeatCount         *int
+  NewBillingInterval   *BillingInterval
+  NewCancelAtPeriodEnd *bool
+}
+
+func (opts UpdateCustomerOptions) Validate() error {`,
+    '   if opts.NewSeatCount != nil {',
+    `      if *opts.NewSeatCount <= 0 {
+        }
+    }
+
+    if opts.NewBillingInterval != nil {
+        if !opts.NewBillingInterval.IsValid() {
+            return invalidValueError(“NewBillingInterval”)
+        }
+    }`,
     '}',
 ]
 
-export const CodyAnimation: FunctionComponent = () => {
+export const CodyAnimation: FunctionComponent<{ className?: string; isLight?: boolean }> = ({ className, isLight }) => {
     const [startAnimation, setStartAnimation] = useState(false)
+    const [initialAnimationRun, setInitialAnimationRun] = useState(true)
     const [nextLine, setNextLine] = useState(false)
     const [showSuggestion, setShowSuggestion] = useState(false)
     const [applySuggestion, setApplySuggestion] = useState(false)
+    const [typingCodeLines, setTypingCodeLines] = useState(0)
 
     const windowWidth = useWindowWidth()
     const isMobile = windowWidth < breakpoints.lg
@@ -61,60 +69,94 @@ export const CodyAnimation: FunctionComponent = () => {
     const acceptHandler = (): void => {
         setTimeout(() => setApplySuggestion(true), timingFrames.frame3)
     }
+    useEffect(() => {
+        if (initialAnimationRun) {
+            const animationTimeoutId = setTimeout(() => {
+                setStartAnimation(true)
+            }, 500)
+
+            setInitialAnimationRun(false)
+
+            return () => clearTimeout(animationTimeoutId)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
-        if (isCodyAnimationRefInView && !applySuggestion) {
+        if (isCodyAnimationRefInView && !applySuggestion && !initialAnimationRun) {
             setStartAnimation(true)
-        }
-
-        if (!isCodyAnimationRefInView && applySuggestion) {
+        } else if (!isCodyAnimationRefInView && applySuggestion && !initialAnimationRun) {
             setStartAnimation(false)
             setNextLine(false)
             setShowSuggestion(false)
             setApplySuggestion(false)
         }
-    }, [isCodyAnimationRefInView, applySuggestion])
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isCodyAnimationRefInView, initialAnimationRun])
 
-    const lineNumbers = countTotalLines(codes)
-    const activeLine = showSuggestion ? lineNumbers : nextLine ? 2 : 1
+    const lineNumbers = countTotalLines(codes) + 2
+    const activeLine = showSuggestion || applySuggestion ? lineNumbers : startAnimation ? typingCodeLines + 1 : 1
 
     return (
-        <>
-            <div className=" relative overflow-hidden" ref={codyAnimationRef}>
-                <div className="relative left-[56px] mx-auto flex w-[743.091px] rounded-md border border-[#343A4D] bg-[#191B21] pl-[34px] pt-[40px] pb-[26px] text-sm leading-[19.6px] md:left-[0px]">
-                    <SideSection activeLine={activeLine} accepted={applySuggestion} totalLines={lineNumbers} />
-                    <div className="ml-[21px] flex-1">
-                        <Line active={!nextLine} className="flex flex-row items-center">
-                            {startAnimation ? (
-                                <TypingAnimation code={codes[0]} onCompleted={showSuggestionHandler} />
-                            ) : (
+        <div className={classNames('relative overflow-hidden md:overflow-visible', className)} ref={codyAnimationRef}>
+            <div
+                className={classNames(
+                    'relative left-[81px] !z-[999] mx-auto flex min-h-[412px] w-[728px] rounded-md border border-[#343A4D] py-4 pl-4 text-sm leading-[19.6px] md:left-[0px]',
+                    {
+                        'bg-[#191B21]': !isLight || isMobile,
+                        'bg-violet-700': isLight && !isMobile,
+                    }
+                )}
+            >
+                <SideSection
+                    activeLine={activeLine}
+                    codyStartFrom={10}
+                    codyEndFrom={20}
+                    showCodyPointer={applySuggestion || showSuggestion}
+                    totalLines={lineNumbers}
+                />
+                <div className="relative ml-[9px] flex-1 ">
+                    <Line
+                        className={classNames('flex flex-row items-center ', {
+                            'cody-multiple-lines': !nextLine,
+                        })}
+                    >
+                        {startAnimation ? (
+                            <TypingAnimation
+                                speed={16}
+                                showCursor={!nextLine}
+                                code={codes[0]}
+                                onCompleted={showSuggestionHandler}
+                                setCodeLines={setTypingCodeLines}
+                            />
+                        ) : (
+                            <div className="m-0 inline-flex p-0">
                                 <BlinkCursor />
+                            </div>
+                        )}
+                    </Line>
+                    {nextLine && (
+                        <Line active={nextLine && !applySuggestion} className="flex flex-row items-center">
+                            {!applySuggestion && <BlinkCursor className="ml-[-2px]" />}
+                            {showSuggestion && (
+                                <>
+                                    <CodeHighlighter highlighted={applySuggestion}>{codes[1]}</CodeHighlighter>
+                                </>
                             )}
-                            {!nextLine && <BlinkCursor />}
                         </Line>
-                        {nextLine && (
-                            <Line active={nextLine && !applySuggestion} className="flex flex-row items-center">
-                                {!applySuggestion && <BlinkCursor className="ml-[-2px]" />}
-                                {showSuggestion && (
-                                    <>
-                                        <CodeHighlighter highlighted={applySuggestion}>{codes[1]}</CodeHighlighter>
-                                    </>
-                                )}
+                    )}
+                    {showSuggestion && (
+                        <>
+                            <CodeHighlighter highlighted={applySuggestion}>{codes[2]}</CodeHighlighter>
+                            <Line active={applySuggestion} className="flex flex-row items-center">
+                                <CodeHighlighter highlighted={applySuggestion}>{codes[3]}</CodeHighlighter>
+                                {applySuggestion && <BlinkCursor />}
                             </Line>
-                        )}
-                        {showSuggestion && (
-                            <>
-                                <CodeHighlighter highlighted={applySuggestion}>{codes[2]}</CodeHighlighter>
-                                <Line active={applySuggestion} className="flex flex-row items-center">
-                                    <CodeHighlighter highlighted={applySuggestion}>{codes[3]}</CodeHighlighter>
-                                    {applySuggestion && <BlinkCursor />}
-                                </Line>
-                            </>
-                        )}
-                    </div>
+                        </>
+                    )}
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 

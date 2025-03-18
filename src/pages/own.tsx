@@ -3,10 +3,10 @@ import { FunctionComponent } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 
-import { Badge, ContentSection, FeatureRoadMap, Heading, Layout } from '../components'
+import { Badge, ContentSection, FeatureRoadMap, Layout } from '../components'
 import { MeetWithProductExpertButton } from '../components/cta/MeetWithProductExpertButton'
 import { buttonLocation } from '../data/tracking'
-import { EventName, getEventLogger } from '../hooks/eventLogger'
+import { TelemetryProps } from '../telemetry'
 
 interface OwnContentProps {
     title: string
@@ -43,15 +43,15 @@ const roadMapSteps = [
     },
 ]
 
-const OwnPage: FunctionComponent = () => (
+const OwnPage: FunctionComponent<TelemetryProps> = ({ telemetryRecorder }) => (
     <Layout
         meta={{
             title: 'Code Ownership',
             description:
                 'Evergreen code ownership across code hosts, powering Code Search, Batch Changes, and Insights.',
-            image: 'https://about.sourcegraph.com/own/og-own.png',
+            image: 'https://sourcegraph.com/own/og-own.png',
         }}
-        headerColorTheme="purple"
+        headerColorTheme="dark"
         childrenClassName="sg-bg-gradient-own"
         displayChildrenUnderNav={true}
     >
@@ -62,27 +62,23 @@ const OwnPage: FunctionComponent = () => (
         >
             <div className="md:max-w-[597px]">
                 <div className="flex gap-x-2">
-                    <Heading size="h6" className="text-white">
-                        SOURCEGRAPH OWN
-                    </Heading>
+                    <h6 className="text-white">SOURCEGRAPH OWN</h6>
                     <Badge size="small" text="Experimental" color="dark-blue" />
                 </div>
-                <Heading size="h1" className="mt-2 text-white">
-                    100% code ownership coverage, now
-                </Heading>
-                <Heading size="h3" className="mt-6 text-gray-200">
+                <h1 className="mt-2 text-white">100% code ownership coverage, now</h1>
+                <h3 className="mt-6 text-gray-200">
                     Evergreen code ownership across code hosts, powering Code Search, Batch Changes, and Insights.
-                </Heading>
+                </h3>
                 <div className="mt-8 flex flex-row gap-x-4">
                     <Link
-                        href="https://docs.sourcegraph.com/own"
+                        href="https://sourcegraph.com/docs/own"
                         title="Documentation"
-                        className="btn btn-inverted-primary"
+                        className="btn btn-primary-dark"
                     >
                         Documentation
                     </Link>
                     <MeetWithProductExpertButton
-                        buttonClassName="text-white border border-white"
+                        buttonClassName="btn btn-secondary-dark text-gray-75"
                         buttonLocation={buttonLocation.hero}
                     />
                 </div>
@@ -94,7 +90,7 @@ const OwnPage: FunctionComponent = () => (
             />
         </ContentSection>
 
-        <ContentSection className="grid grid-cols-1 items-center gap-lg gap-x-24 md:mt-24 md:grid-cols-2 md:flex-row">
+        <ContentSection className="grid grid-cols-1 items-center gap-10 gap-x-24 md:mt-24 md:grid-cols-2 md:flex-row">
             <OwnContent
                 title="Resolve incidents and security vulnerabilities faster"
                 description="Search for vulnerable or outdated code patterns and reach out to the owners in seconds. Escalate in one click. Don’t waste time emailing around to find who can help. Fast collaboration, fast remediation."
@@ -109,11 +105,10 @@ const OwnPage: FunctionComponent = () => (
                     controls={false}
                     data-cookieconsent="ignore"
                     onPlay={() =>
-                        getEventLogger().log(
-                            EventName.STATIC_VIDEO_PLAYED,
-                            { title: 'Own vulnerabilities' },
-                            { title: 'Own vulnerabilities' }
-                        )
+                        telemetryRecorder.recordEvent('video', 'play', {
+                            metadata: { video: 1 },
+                            privateMetadata: { title: 'Own vulnerabilities' },
+                        })
                     }
                 >
                     <source
@@ -130,7 +125,7 @@ const OwnPage: FunctionComponent = () => (
             </div>
         </ContentSection>
 
-        <ContentSection className="grid grid-cols-1 items-center gap-lg gap-x-24 md:grid-cols-2 md:flex-row">
+        <ContentSection className="grid grid-cols-1 items-center gap-10 gap-x-24 md:grid-cols-2 md:flex-row">
             <div className="order-last md:order-first">
                 <video
                     className="mx-auto w-full max-w-[577px] rounded-[5px] bg-gray-300"
@@ -141,11 +136,10 @@ const OwnPage: FunctionComponent = () => (
                     controls={false}
                     data-cookieconsent="ignore"
                     onPlay={() =>
-                        getEventLogger().log(
-                            EventName.STATIC_VIDEO_PLAYED,
-                            { title: 'Own knowledge sharing' },
-                            { title: 'Own knowledge sharing' }
-                        )
+                        telemetryRecorder.recordEvent('video', 'play', {
+                            metadata: { video: 2 },
+                            privateMetadata: { title: 'Own knowledge sharing' },
+                        })
                     }
                 >
                     <source
@@ -166,18 +160,18 @@ const OwnPage: FunctionComponent = () => (
             />
         </ContentSection>
 
-        <ContentSection className="grid grid-cols-1 gap-lg gap-x-24 md:grid-cols-2 md:flex-row" parentClassName="!pb-0">
+        <ContentSection className="grid grid-cols-1 gap-10 gap-x-24 md:grid-cols-2 md:flex-row" parentClassName="!pb-0">
             <OwnContent
                 title="Own is currently an experimental feature, but we have a big vision for code ownership."
                 description="We’d love your feedback on Own. You can turn it on using the documentation below, or contact us to get a demo and learn more about our roadmap."
                 linkText="Read more about our vision for code ownership."
-                link="https://about.sourcegraph.com/blog/our-vision-for-code-ownership"
+                link="https://sourcegraph.com/blog/our-vision-for-code-ownership"
             />
 
             <div>
                 <FeatureRoadMap steps={roadMapSteps} />
 
-                <Heading className="ml-6 text-white" size="h5">
+                <h5 className="ml-6 text-white">
                     Have a feature request?{' '}
                     <Link
                         className="text-white underline"
@@ -186,27 +180,25 @@ const OwnPage: FunctionComponent = () => (
                     >
                         Let us know!
                     </Link>
-                </Heading>
+                </h5>
             </div>
         </ContentSection>
 
         <ContentSection className="flex flex-col items-center" parentClassName="mt-12 mb-4">
-            <Heading className="mb-4 !text-[36px] text-white" size="h2">
-                Try Sourcegraph Own
-            </Heading>
+            <h2 className="mb-4 !text-[36px] text-white">Try Sourcegraph Own</h2>
 
             <p className="mb-0 text-lg text-gray-200">Available now as an experimental feature!</p>
             <div className="mt-8 flex flex-row gap-x-4">
                 <Link
-                    href="https://docs.sourcegraph.com/own"
+                    href="https://sourcegraph.com/docs/own"
                     title="Documentation"
-                    className="btn btn-inverted-primary"
+                    className="btn btn-primary-dark"
                     target="_blank"
                 >
                     Documentation
                 </Link>
                 <MeetWithProductExpertButton
-                    buttonClassName="text-white border border-white"
+                    buttonClassName="btn btn-secondary-dark text-gray-75"
                     buttonLocation={buttonLocation.body}
                 />
             </div>
@@ -216,11 +208,7 @@ const OwnPage: FunctionComponent = () => (
 
 const OwnContent: FunctionComponent<OwnContentProps> = ({ title, description, link = '', linkText, className }) => (
     <div className={classNames(className, 'md:max-w-[572px]')}>
-        {title && (
-            <Heading size="h4" className="!text-4xl text-white">
-                {title}
-            </Heading>
-        )}
+        {title && <h4 className="text-white">{title}</h4>}
         {description && <p className="mt-[30px] text-lg text-gray-200">{description}</p>}
         {linkText && (
             <Link href={link} className="mt-[30px] text-lg text-gray-200 underline">

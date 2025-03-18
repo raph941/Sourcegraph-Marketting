@@ -1,3 +1,13 @@
+import posthog, { CaptureResult } from 'posthog-js'
+
+import { ProviderType } from '../components/cta/ExternalProvider'
+import { GITHUB, GITLAB, VSCODE, JETBRAINS } from '../pages/constants'
+
+interface EventData {
+    current_page?: string
+    page_position?: string
+}
+
 export const copy = async (text: string): Promise<void> => {
     if (navigator.clipboard) {
         await navigator.clipboard.writeText(text)
@@ -99,21 +109,64 @@ interface ButtonTrackerData {
     conversionId: string
 }
 
-export const getAuthButtonsTracker = (provider: 'github' | 'gitlab' | 'google'): ButtonTrackerData => {
-    if (provider === 'github') {
+export const getProviderButtonsTracker = (providerType: ProviderType): ButtonTrackerData => {
+    if (providerType === GITHUB) {
         return {
             buttonId: 'githubButton',
             conversionId: 'IE36JRZchpg6WWkoBm1cNN',
         }
     }
-    if (provider === 'gitlab') {
+    if (providerType === GITLAB) {
         return {
             buttonId: 'gitlabButton',
             conversionId: 'sL3CVtxUlXaAvWjHZb7PTW',
+        }
+    }
+    if (providerType === VSCODE) {
+        return {
+            buttonId: 'vscodeButton',
+            conversionId: '',
+        }
+    }
+    if (providerType === JETBRAINS) {
+        return {
+            buttonId: 'jetbrainsButton',
+            conversionId: '',
         }
     }
     return {
         buttonId: 'googleButton',
         conversionId: '',
     }
+}
+
+export const captureCustomEventWithPageData = (
+    eventName: string,
+    pagePosition?: string,
+    disableCurrentPage?: boolean
+): void | CaptureResult => {
+    const eventData: EventData = {}
+
+    if (!disableCurrentPage) {
+        eventData.current_page = window.location.href
+    }
+    if (pagePosition !== undefined) {
+        eventData.page_position = pagePosition
+    }
+
+    try {
+        return posthog?.capture(eventName, eventData)
+    } catch (error) {
+        console.error('Error capturing event in posthog:', error)
+    }
+}
+
+export const formatDate = (dateString = ''): string => {
+    const date = new Date(dateString);
+    const options: Intl.DateTimeFormatOptions = { 
+        year: 'numeric', 
+        month: 'long',
+        day: 'numeric'  
+    };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
 }

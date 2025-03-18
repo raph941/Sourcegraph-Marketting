@@ -45,6 +45,7 @@ export interface FrontMatter {
     authors?: {
         name: string
         url?: string
+        avatar?: string
     }[]
     tags?: string[]
     changelogItems?: {
@@ -57,6 +58,8 @@ export interface FrontMatter {
     layout?: string
     style?: string
     audioSrc?: string
+    version?: string[]
+    versionIcon?: string
 }
 
 export interface PostComponentProps {
@@ -107,6 +110,7 @@ export const postIndexType = (frontmatter: FrontMatter): PostIndexType =>
 export enum BlogType {
     Podcast = 'podcast',
     Blog = 'blog',
+    Changelog = 'changelog',
 }
 
 export const blogType = (frontmatter: FrontMatter): BlogType =>

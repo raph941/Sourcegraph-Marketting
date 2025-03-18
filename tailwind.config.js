@@ -1,19 +1,22 @@
 /** @type {import('tailwindcss').Config} */
 
 const plugin = require('tailwindcss/plugin')
+const typography = require('@tailwindcss/typography')
 
 const dlsColors = {
   white: '#ffffff',
   black: '#000000',
   gray: {
     50: '#F9FAFB',
+    75: '#EBEBEB',
     100: '#F5F7FB',
-    200: '#DBE2F0',
+    200: '#E4E9F4',
     300: '#A6B6D9',
-    400: '#696B71',
-    500: '#484B51',
-    600: '#313131',
-    700: '#121212',
+    400: '#5E6E8C',
+    500: '#374151',
+    600: '#1F2A37',
+    700: '#111928',
+    800: '#14171f',
   },
   blue: {
     100: '#DCFEFE',
@@ -30,6 +33,7 @@ const dlsColors = {
     500: '#C22626',
   },
   lemon: {
+    50: '#C9C9C9',
     100: '#FFFCB1',
     200: '#FFF2CF',
     300: '#FFDB45',
@@ -44,11 +48,12 @@ const dlsColors = {
     500: '#1F7D45',
   },
   blurple: {
-    100: '#DBDBFF',
-    200: '#BFBFFF',
-    300: '#6B59ED',
-    400: '#5033E1',
-    500: '#3826CC',
+    100: '#EBE3FD',
+    200: '#C9B3F9',
+    300: '#A884F6',
+    400: '#8552F2',
+    500: '#6525EF',
+    600: '#4D10D1',
   },
   violet: {
     100: '#EEDFFF',
@@ -86,7 +91,8 @@ module.exports = {
 
     fontFamily: {
       sans: [
-        'Source Sans Pro',
+
+        'InterVariable',
         'ui-sans-serif',
         'system-ui',
         '-apple-system',
@@ -99,42 +105,42 @@ module.exports = {
         'sans-serif',
       ],
       mono: [
-        'Source Code Pro',
-        'ui-monospace',
-        'SFMono-Regular',
-        'Menlo',
-        'Monaco',
-        'Consolas',
-        '"Liberation Mono"',
-        '"Courier New"',
-        'monospace',
+        'Roboto mono',
+        'ui-sans-serif',
+        'system-ui',
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        '"Noto Sans"',
+        'sans-serif',
       ],
-      grotesk: ['Space Grotesk'],
-      spaceMono: ['Space Mono'],
+      display: ['Space Grotesk'],
     },
 
     fontSize: {
-      xs: ['0.75rem', { lineHeight: '1.125rem' }], // 12px / 18px
-      sm: ['0.875rem', { lineHeight: '1.313rem' }], // 14px / 21px
-      base: ['1rem', { lineHeight: '1.5rem' }], // 16px / 24px
-      lg: ['1.125rem', { lineHeight: '1.688rem' }], // 18px / 27px
-      xl: ['1.25rem', { lineHeight: '1.75rem' }], // 20px / 28px
-      '2xl': ['1.5rem', { lineHeight: '2.125rem' }], // 24px / 34px
-      '3xl': ['1.875rem', { lineHeight: '2.625rem' }], // 30px / 42px
-      '4xl': ['2.25rem', { lineHeight: '2.688rem' }], // 36px / 43px
-      '5xl': ['2.5rem', { lineHeight: '3rem' }], // 40px / 48px
-      '6xl': ['3rem', { lineHeight: '3.625rem' }], // 48px / 58px
-      '7xl': ['3.25rem', { lineHeight: '3.875rem' }], // 52px / 62px
-      '8xl': ['3.875rem', { lineHeight: '4.625rem' }], // 62px / 74px
-      '9xl': ['4.5rem', { lineHeight: '5.375rem' }], // 72px / 86px
+      xs: ['0.75rem', { lineHeight: '1.5' }], // 12px / 18px
+      sm: ['0.875rem', { lineHeight: '1.5' }], // 14px / 21px
+      base: ['1rem', { lineHeight: '1.5' }], // 16px / 24px
+      lg: ['1.125rem', { lineHeight: '1.5' }], // 18px / 27px
+      xl: ['1.25rem', { lineHeight: '1.5' }], // 20px / 28px
+      '2xl': ['1.5rem', { lineHeight: '1.4' }], // 24px / 34px
+      '3xl': ['1.875rem', { lineHeight: '1.3' }], // 30px / 42px
+      '4xl': ['2.25rem', { lineHeight: '1.2' }], // 36px / 43px
+      '5xl': ['2.5rem', { lineHeight: '1.2' }], // 40px / 48px
+      '6xl': ['3rem', { lineHeight: '1.2' }], // 48px / 58px
+      '7xl': ['3.25rem', { lineHeight: '1.2' }], // 52px / 62px
+      '8xl': ['3.875rem', { lineHeight: '1.2' }], // 72px / 74px
     },
 
     letterSpacing: {
-      tightest: '-0.02em',
-      tighter: '-0.01em',
-      tight: '-0.005em',
+      tightest: '-1px',
+      tighter: '-0.5px',
+      tight: '-0.25px',
       normal: 0,
-      wide: '0.03em',
+      wide: '0.25px',
     },
 
     // This extends (not replaces) theme properties
@@ -148,20 +154,40 @@ module.exports = {
       screens: {
         xs: '480px',
         md: '830px',
+        mdi: { min: '1024px' },
         lg: '1124px',
       },
 
       spacing: {
-        xxs: '0.5rem', // 8px
-        xs: '1rem', // 16px
-        sm: '1.5rem', // 24px
-        md: '2rem', // 32px
-        lg: '2.5rem', // 40px
-        xl: '3rem', // 48px
-        '2xl': '3.5rem', // 56px
-        '3xl': '4rem', // 64px
-        '4xl': '4.5rem', // 72px
-        '5xl': '6rem', // 96px
+        1: '4px',
+        2: '8px',
+        3: '12px',
+        4: '16px',
+        5: '20px',
+        6: '24px',
+        7: '28px',
+        8: '32px',
+        9: '36px',
+        10: '40px',
+        11: '44px',
+        12: '48px',
+        14: '56px',
+        16: '64px',
+        20: '80px',
+        24: '96px',
+        28: '112px',
+        32: '128px',
+        36: '144px',
+        40: '160px',
+        44: '176px',
+        48: '192px',
+        52: '208px',
+        56: '224px',
+        60: '240px',
+        64: '256px',
+        72: '288px',
+        80: '320px',
+        96: '384px',
       },
 
       borderWidth: {
@@ -192,7 +218,7 @@ module.exports = {
         fadeInSlow: 'fadeIn 0.5s ease-in forwards',
         slideFadeIn: 'slideFadeIn 2s ease-in-out',
       },
-
+      
       dropShadow: {
         xl: `0px 0px 15px ${dlsColors.violet['400']}`,
         '2xl': `0px 0px 38px ${dlsColors.violet['400']}`,
@@ -209,6 +235,7 @@ module.exports = {
   },
 
   plugins: [
+    typography,
     plugin(({ addBase }) => {
       const extractColors = (colors, colorGroup = '') => {
         return Object.keys(colors).reduce((previousColors, colorKey) => {

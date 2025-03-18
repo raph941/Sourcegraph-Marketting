@@ -32,6 +32,10 @@ export const Blockquote: FunctionComponent<{
     leftBorderAccent?: boolean
     inline?: boolean // inline vs. col layout
     className?: string
+    authorPointer?: boolean
+    quoteClassName?: string
+    displayLogoOnTop?: boolean
+    borderLeftColor?: string
 }> = ({
     quote,
     author,
@@ -45,6 +49,10 @@ export const Blockquote: FunctionComponent<{
     inline = true,
     leftBorderAccent = false,
     className,
+    authorPointer = true,
+    quoteClassName,
+    displayLogoOnTop,
+    borderLeftColor = 'border-l-violet-400',
 }) => {
     const windowWidth = useWindowWidth()
     const isMdOrDown = windowWidth < breakpoints.lg
@@ -56,12 +64,12 @@ export const Blockquote: FunctionComponent<{
         if (border) {
             if (inline) {
                 return `my-8 border-solid ${borderLocation} ${
-                    leftBorderAccent ? 'border-l-violet-400' : 'border-r-violet-400'
+                    leftBorderAccent ? borderLeftColor : 'border-r-violet-400'
                 } `
             }
             // Blockquotes in column: Border flips to horizontal for mobile
             if (isMdOrDown) {
-                return `pt-3xl pb-0 mb-0 border-solid ${borderNone} border-t-3 border-t-violet-400`
+                return `pt-16 pb-0 mb-0 border-solid ${borderNone} border-t-3 border-t-violet-400`
             }
             return `border-solid ${borderLocation} border-r-violet-400`
         }
@@ -69,18 +77,35 @@ export const Blockquote: FunctionComponent<{
     }
 
     return (
-        <blockquote className={classNames('px-md', getBorderStyle(), className)}>
-            {headline ? largeText ? <h2>{headline}</h2> : <h4 className="mb-sm">{headline}</h4> : null}
+        <blockquote className={classNames('px-8', getBorderStyle(), className)}>
+            {logo && displayLogoOnTop && (
+                <img
+                    src={logo.src}
+                    className={classNames('mb-3 max-w-[150px]', {
+                        'mx-auto': !border && center,
+                    })}
+                    width="110px"
+                    alt={logo.alt}
+                />
+            )}
+            {headline ? largeText ? <h2>{headline}</h2> : <h4 className="mb-6">{headline}</h4> : null}
 
             {largeText ? (
                 <h3 className="text-3xl font-normal">&ldquo;{quote}&rdquo;</h3>
             ) : (
-                <p className="font-normal">&ldquo;{quote}&rdquo;</p>
+                <p className={classNames('font-normal', quoteClassName)}>&ldquo;{quote}&rdquo;</p>
             )}
 
-            {author && <figcaption className="mt-4 text-gray-400">&mdash; {author}</figcaption>}
+            {author && (
+                <figcaption
+                    className={classNames('mt-4 text-gray-400', { 'mt-4': authorPointer, 'mt-2.5': !authorPointer })}
+                >
+                    {authorPointer && <span>&mdash;</span>} {author}
+                </figcaption>
+            )}
 
             {logo &&
+                !displayLogoOnTop &&
                 (logo.href ? (
                     <Link href={logo.href}>
                         <img
@@ -106,7 +131,10 @@ export const Blockquote: FunctionComponent<{
             {link?.href &&
                 (link?.href.includes('http') ? (
                     <a
-                        className={classNames('mt-md flex', !border && center && 'justify-center')}
+                        className={classNames(
+                            'btn-link btn-link-icon mt-md flex',
+                            !border && center && 'justify-center'
+                        )}
                         href={link.href}
                         target="_blank"
                         rel="nofollow noreferrer"
@@ -116,19 +144,22 @@ export const Blockquote: FunctionComponent<{
                         data-button-type="cta"
                     >
                         {link.text}
-                        <ArrowRightIcon className="ml-3 inline" />
+                        <ArrowRightIcon className="link-icon" />
                     </a>
                 ) : (
                     <Link
                         href={link.href}
-                        className={classNames('mt-md flex', !border && center && 'justify-center')}
+                        className={classNames(
+                            'btn-link btn-link-icon mt-md flex',
+                            !border && center && 'justify-center'
+                        )}
                         title={link.text}
                         data-button-style={buttonStyle.textWithArrow}
                         data-button-location={buttonLocation.body}
                         data-button-type="cta"
                     >
                         {link.text}
-                        <ArrowRightIcon className="ml-3 inline" />
+                        <ArrowRightIcon className="link-icon" />
                     </Link>
                 ))}
         </blockquote>

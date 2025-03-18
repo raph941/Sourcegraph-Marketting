@@ -38,11 +38,9 @@ const Cta: FunctionComponent<Cta> = ({ text, ctaStyle, link }) => {
             title={text}
             href={link}
             className={classNames({
-                'btn bg-white text-blurple-400 hover:bg-blurple-400 hover:text-white':
-                    ctaStyle === 'primaryButtonWhite',
-                'btn border-white text-white hover:border-blurple-400 hover:bg-blurple-400':
-                    ctaStyle === 'outlineButtonLight',
-                'btn btn-link text-white hover:text-blurple-200': ctaStyle === 'link',
+                'btn btn-primary-dark': ctaStyle === 'primaryButtonWhite',
+                'btn btn-secondary-dark': ctaStyle === 'outlineButtonLight',
+                'btn btn-link-dark': ctaStyle === 'link',
             })}
             data-button-style={ctaTrackingStyle}
             data-button-location={buttonLocation.body}
@@ -70,17 +68,17 @@ const Cta: FunctionComponent<Cta> = ({ text, ctaStyle, link }) => {
  * This is our CTA Section as defined in our DLS. Please refer to it for specs.
  */
 export const CallToActionContentSection: FunctionComponent<CtaSection> = ({
-    title = 'Try Sourcegraph on your code.',
-    description = 'Experience code intelligence with a free trial for you and your team, or search millions of open source repositories.',
+    title = 'Try Sourcegraph on your code',
+    description = 'Help your team search, write, and understand code faster with the code intelligence platform.',
     cta1 = {
-        text: 'Start for free',
+        text: 'Book a demo',
         ctaStyle: 'primaryButtonWhite',
         link: '/contact/request-info',
     },
     cta2 = {
-        text: 'Meet with a product expert',
+        text: 'See pricing',
         ctaStyle: 'link',
-        link: '/demo',
+        link: '/pricing',
     },
 }) => {
     const windowWidth = useWindowWidth()
@@ -90,24 +88,24 @@ export const CallToActionContentSection: FunctionComponent<CtaSection> = ({
         <>
             <div className="bg-violet-700 text-white">
                 <div
-                    className="bg-[] mx-auto grid h-full min-h-[291px] max-w-screen-xl grid-cols-12 items-center bg-[center_left] bg-repeat-y px-sm py-3xl lg:pl-0"
+                    className="bg-[] mx-auto grid h-full min-h-[291px] max-w-screen-xl grid-cols-12 items-center bg-[center_left] bg-repeat-y px-6 py-16 lg:pl-0"
                     // eslint-disable-next-line react/forbid-dom-props
                     style={lgAndUp ? { backgroundImage: `url('${illustration}')` } : undefined}
                 >
-                    <div className="col-span-full md:col-span-7 lg:col-span-5 lg:col-start-4 lg:pl-xl">
-                        <h2 className="mb-sm text-violet-200">{title}</h2>
+                    <div className="col-span-full md:col-span-7 lg:col-span-5 lg:col-start-4 lg:pl-12">
+                        <h2 className="mb-6 text-violet-200">{title}</h2>
                         <p className="max-w-2xl text-lg">{description}</p>
                     </div>
 
                     <div className={classNames('col-span-full flex flex-col items-center md:col-span-5 lg:col-span-4')}>
                         {cta1 && (
-                            <div className="mt-sm">
+                            <div className="mt-6">
                                 <Cta {...cta1} />
                             </div>
                         )}
 
                         {cta2 && typeof cta2 === 'object' && (
-                            <div className="mt-sm">
+                            <div className="mt-6">
                                 <Cta {...cta2} />
                             </div>
                         )}

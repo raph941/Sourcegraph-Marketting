@@ -3,8 +3,7 @@ import { FunctionComponent } from 'react'
 import classNames from 'classnames'
 import InformationCircleOutlineIcon from 'mdi-react/InformationCircleOutlineIcon'
 
-import { breakpoints } from '../../data/breakpoints'
-import { useWindowWidth } from '../../hooks/windowWidth'
+import { Badge } from '../Badge'
 import { Tooltip } from '../Tooltip'
 
 import { FeatureInfo } from './data'
@@ -15,25 +14,51 @@ interface Props {
     className?: string
 }
 
-export const PricingPlanFeature: FunctionComponent<Props> = ({ feature, tag: Tag = 'li', className }) => {
-    const windowWidth = useWindowWidth()
-    const isMdOrDown = windowWidth < breakpoints.lg
-    const isSmOrUp = windowWidth > breakpoints.xs
-
-    return (
-        <Tag className={classNames(Tag === 'li' && 'text-sm')}>
-            <div className="my-xxs flex" title={!isSmOrUp ? feature.description : undefined}>
-                <div className={classNames('text-lg', className)}>{feature.label}</div>
-
-                {feature.description && isSmOrUp && (
+export const PricingPlanFeature: FunctionComponent<Props> = ({ feature, tag: Tag = 'li', className }) => (
+    <Tag className={classNames(Tag === 'li' && 'text-sm')}>
+        <div>
+            <div className="flex items-center">
+                <div
+                    className={classNames(
+                        feature.label === 'Bring your own LLM' ? 'text-[#5E6E8C]' : 'text-gray-500',
+                        className
+                    )}
+                >
+                    {feature.label}
+                </div>
+                {feature.label === 'Context Filters' && (
+                    <Badge
+                        text="new"
+                        size="small"
+                        className="ml-1 px-1 not-italic leading-3 text-gray-500"
+                        color="light-gray"
+                    />
+                )}
+                {feature.label === 'Bring your own LLM' && (
+                    <Badge
+                        text="coming soon"
+                        size="small"
+                        className="ml-1 px-1 not-italic leading-3 text-gray-500"
+                        color="light-gray"
+                    />
+                )}
+                {feature.description && (
                     <Tooltip
-                        wrapperClassName="my-auto ml-xxs text-gray-300 flex items-center"
+                        wrapperClassName="my-auto ml-2 text-gray-300 flex items-center"
+                        tooltipClassName="p-2 z-20"
                         text={feature.description}
                     >
-                        <InformationCircleOutlineIcon size={isMdOrDown ? 25 : 19} />
+                        <InformationCircleOutlineIcon size={18} />
                     </Tooltip>
                 )}
             </div>
-        </Tag>
-    )
-}
+            {feature.options && (
+                <ul className="ml-0 list-none py-2 text-gray-500">
+                    {feature?.options?.map(option => (
+                        <li key={option}>- {option}</li>
+                    ))}
+                </ul>
+            )}
+        </div>
+    </Tag>
+)

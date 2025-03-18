@@ -1,4 +1,4 @@
-type ContentTypes = 'virtual event' | 'blog post' | 'guide' | 'customer story' | 'video' | 'whitepaper'
+type ContentTypes = 'virtual event' | 'blog post' | 'guide' | 'customer story' | 'video' | 'whitepaper' | 'comparison'
 type Subjects =
     | 'code security'
     | 'developer onboarding'
@@ -16,7 +16,6 @@ type Subjects =
     | 'cody'
     | 'code monitoring'
     | 'integrations'
-    | 'code search'
 
 export interface Resource {
     title: string
@@ -35,6 +34,27 @@ export interface Resource {
  */
 export const resourceItems: Resource[] = [
     {
+        featured: false,
+        title: 'Coinbase developers improve productivity and satisfaction using Cody while meeting strict security requirements.',
+        link: '/case-studies/coinbase-speeds-up-financial-systems-innovation/',
+        contentType: 'customer story',
+        subjects: ['developer productivity', 'code security'],
+        description: 'Coinbase developers improve productivity and satisfaction using Cody while meeting strict security requirements.',
+        publishDate: '2023-01-01T00:00:00Z',
+        keyword: ['Coinbase', 'Cody', 'developer productivity', 'security'],
+    },
+    {
+        featured: true,
+        title: 'Virtual Code AI Summit',
+        description:
+            'This one-day virtual event, hosted by Sourcegraph, is your chance to learn from industry leaders as they dive deep into how AI is transforming software development and solving complex code challenges.',
+        contentType: 'virtual event',
+        publishDate: '2024-12-12',
+        link: 'https://sourcegraph.registration.goldcast.io/events/b650937d-ba9f-40ce-9429-35c3539a5bb1?utm_medium=website&utm_source=website',
+        subjects: ['cody'],
+        keyword: ['code ai', 'virtual event', 'summit'],
+    },
+    {
         featured: true,
         title: 'Big Code in the AI era',
         link: '/big-code/big-code-in-ai-era',
@@ -47,25 +67,25 @@ export const resourceItems: Resource[] = [
     },
     {
         featured: false,
-        title: 'Cody context architecture',
-        link: '/whitepaper/cody-context-architecture.pdf',
-        contentType: 'whitepaper',
+        title: 'Build unit tests with AI',
+        link: '/solutions/build-unit-tests',
+        contentType: 'guide',
         subjects: ['cody'],
         description:
-            'Context awareness is key to the quality and precision of Cody. This paper outlines how Cody fetches the right context at the right time to answer queries.',
-        publishDate: '2023-06-16T17:32:24Z',
-        keyword: ['Cody', 'AI'],
+            'Cody lives in your IDE sidebar and generates unit tests using AI, considering your existing code to create relevant tests.',
+        publishDate: '2024-05-06T17:32:24Z',
+        keyword: ['AI', 'Cody'],
     },
     {
-        featured: false,
-        title: "How Sourcegraph's AI platform powers Cody",
-        link: '/whitepaper/how-sourcegraph-ai-platform-powers-cody.pdf',
-        contentType: 'whitepaper',
-        subjects: ['cody'],
+        featured: true,
+        title: 'Big Code in the AI era',
+        link: '/big-code/big-code-in-ai-era',
+        contentType: 'guide',
+        subjects: [],
         description:
-            'Through a close look at what goes on under the hood of a typical user interaction with Cody you’ll learn how the platform gives Cody a unique advantage compared to other coding assistants today and how that advantage will grow in the future.',
+            'Developers are struggling more than ever with issues around tech debt, maintenance, collaboration, and scalability. But with the overnight AI boom, the pain of Big Code is only getting worse.',
         publishDate: '2023-06-16T17:32:24Z',
-        keyword: ['Cody', 'AI'],
+        keyword: ['Big Code', 'AI', 'Cody'],
     },
     {
         featured: false,
@@ -76,17 +96,6 @@ export const resourceItems: Resource[] = [
         description: 'A commissioned study conducted by Forrester Consulting on behalf of Sourcegraph',
         publishDate: '2023-06-16T17:32:24Z',
         keyword: ['Forrester', 'Gartner'],
-    },
-    {
-        featured: false,
-        title: 'Update to Neo Financial improves the developer experience with Sourcegraph',
-        link: '/case-studies/neo-financial-improves-the-developer-experience-with-sourcegraph',
-        contentType: 'customer story',
-        subjects: ['code search', 'code insights'],
-        description:
-            'Learn how Neo Financial attacts and retains top engineering talent by providing a culture, and tools like Sourcegraph, that focus on improving the developer experience.',
-        publishDate: '2023-06-16T17:32:24Z',
-        keyword: ['Neo', 'Neo FInancial', 'code search', 'code insights'],
     },
     {
         featured: false,
@@ -101,14 +110,23 @@ export const resourceItems: Resource[] = [
     },
     {
         featured: false,
-        title: 'GitLab solution brief',
-        link: '/guides/sourcegraph-gitlab-solution-brief.pdf',
+        title: 'GitLab and Sourcegraph',
+        link: '/solutions/gitlab',
         contentType: 'guide',
         subjects: ['code search', 'batch changes', 'code insights', 'code monitoring', 'integrations'],
-        description:
-            "Sourecgraph's native GitLab integration helps developer build better software by freeing them up to focus on complex problems.",
+        description: 'Sourcegraph provides best-in-class search and AI assistance for code hosted on GitLab.',
         publishDate: '2023-03-08T17:32:24Z',
         keyword: ['GitLab', 'code search', 'batch changes', 'code insights', 'code monitoring', 'integrations'],
+    },
+    {
+        featured: false,
+        title: 'Bitbucket and Sourcegraph',
+        link: '/solutions/bitbucket',
+        contentType: 'guide',
+        subjects: ['code search', 'batch changes', 'code insights', 'code monitoring', 'integrations'],
+        description: 'Sourcegraph provides best-in-class search and AI assistance for code hosted on Bitbucket.',
+        publishDate: '2024-04-19T08:32:24Z',
+        keyword: ['BitBucket', 'code search', 'batch changes', 'code insights', 'code monitoring', 'integrations'],
     },
     {
         featured: false,
@@ -131,16 +149,6 @@ export const resourceItems: Resource[] = [
             'The first part in a four part series on how you can reduce cloud costs. This piece reviews the importance of creating visibility and practical ways you can do this.',
         publishDate: '2022-08-15T21:19:11Z',
         keyword: ['Cloud costs', 'Cost optimization', 'Visibility'],
-    },
-    {
-        featured: false,
-        title: 'Hashicorp customer story',
-        link: '/case-studies/hashicorp-uses-sourcegraph-to-streamline-cross-repository-code-search',
-        contentType: 'customer story',
-        subjects: ['code search', 'code reuse', 'batch changes'],
-        description: 'Learn how HashiCorp streamlines cross-repository code search and fixes with Sourcegraph.',
-        publishDate: '2022-09-01T17:32:24Z',
-        keyword: ['code search', 'code reuse', 'batch changes', 'Tech debt'],
     },
     {
         featured: false,
@@ -465,7 +473,7 @@ export const resourceItems: Resource[] = [
     {
         featured: false,
         title: 'Cody: security and legal whitepaper',
-        link: '/whitepapers/cody-security-and-legal.pdf',
+        link: '/whitepapers/cody-security-and-legal',
         contentType: 'whitepaper',
         subjects: ['cody'],
         description:
@@ -475,8 +483,18 @@ export const resourceItems: Resource[] = [
     },
     {
         featured: false,
+        title: "Buyer's Guide to AI code assistants",
+        link: '/guides/code-ai-buyers-guide',
+        contentType: 'guide',
+        subjects: ['developer productivity'],
+        description: 'A guide to help you understand AI code assistants, their benefits, and features to look for.',
+        publishDate: '2024-09-17T00:00:00Z',
+        keyword: ['ai', 'guide', 'developer productivity'],
+    },
+    {
+        featured: false,
         title: 'Why Sourcegraph’s single-tenant cloud instance is the most secure way to deploy Sourcegraph',
-        link: '/guides/single-tenant-cloud-instance-is-the-most-secure-way-to-deploy-Sourcegraph.pdf',
+        link: '/guides/single-tenant-cloud-instance-is-the-most-secure-way-to-deploy-Sourcegraph-nov2023.pdf',
         contentType: 'guide',
         subjects: [],
         description: "Learn why Sourcegraph's single-tenant cloud instance provides the highest level of security.",
@@ -511,5 +529,75 @@ export const resourceItems: Resource[] = [
             'platform',
             'platform engineering',
         ],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph vs GitHub code search',
+        link: 'compare/github-vs-code-search',
+        contentType: 'comparison',
+        subjects: ['code search'],
+        description: 'Feature comparison of Sourcegraph and GitHub code search',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['code search'],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph Cody vs GitHub Copilot',
+        link: 'compare/copilot-vs-cody',
+        contentType: 'comparison',
+        subjects: ['cody'],
+        description: 'Feature comparison of Sourcegraph Cody and GitHub Copilot',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['cody'],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph Cody vs Amazon CodeWhisperer',
+        link: 'compare/amazon-codewhisperer-vs-cody',
+        contentType: 'comparison',
+        subjects: ['cody'],
+        description: 'Feature comparison of Sourcegraph Cody and Amazon CodeWhisperer',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['cody'],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph Cody vs Cursor',
+        link: 'compare/cursor-vs-cody',
+        contentType: 'comparison',
+        subjects: ['cody'],
+        description: 'Feature comparison of Sourcegraph Cody and Cursor',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['cody'],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph Cody vs Tabnine',
+        link: 'compare/tabnine-vs-cody',
+        contentType: 'comparison',
+        subjects: ['cody'],
+        description: 'Feature comparison of Sourcegraph Cody and Tabnine',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['cody'],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph Cody vs Codeium',
+        link: 'compare/codeium-vs-cody',
+        contentType: 'comparison',
+        subjects: ['cody'],
+        description: 'Feature comparison of Sourcegraph Cody and Codeium',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['cody'],
+    },
+    {
+        featured: false,
+        title: 'Sourcegraph Cody vs Continue',
+        link: 'compare/continue-vs-cody',
+        contentType: 'comparison',
+        subjects: ['cody'],
+        description: 'Feature comparison of Sourcegraph Cody and Continue',
+        publishDate: '2024-04-23T00:00:00Z',
+        keyword: ['cody'],
     },
 ]

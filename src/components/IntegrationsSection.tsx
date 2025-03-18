@@ -2,7 +2,7 @@ import { FunctionComponent, ReactNode } from 'react'
 
 import Link from 'next/link'
 
-import { Badge, ContentSection, Heading } from '.'
+import { Badge, ContentSection } from '.'
 
 const codeHosts: string[] = [
     'GitLab.com',
@@ -102,11 +102,9 @@ export const IntegrationsSection: FunctionComponent = () => (
     <ContentSection background="white">
         <h2 className="mb-12">Works with your code, infrastructure, and tools</h2>
 
-        <div className="grid grid-cols-1 gap-md lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
             <div className="flex flex-col">
-                <Heading size="h4" as="h3" className="mb-6 !text-[20px] !font-semibold !leading-7">
-                    All your repositories + 2M open source (and counting)
-                </Heading>
+                <h4 className="mb-6">All your repositories + 2M open source (and counting)</h4>
 
                 <ul className="ml-0 flex list-none flex-wrap gap-2 lg:max-w-lg">{renderListItems(codeHosts)}</ul>
                 <Link href="mailto:feedback@sourcegraph.com" className="mt-2">
@@ -119,9 +117,7 @@ export const IntegrationsSection: FunctionComponent = () => (
             </div>
 
             <div className="flex flex-col">
-                <Heading size="h4" as="h3" className="mb-6 !text-[20px] !font-semibold !leading-7">
-                    All your languages
-                </Heading>
+                <h4 className="mb-6">All your languages</h4>
 
                 <ul className="ml-0 flex list-none flex-wrap gap-2 lg:max-w-xl">{renderListItems(languages)}</ul>
                 <Link href="mailto:feedback@sourcegraph.com" className="mt-2">
@@ -134,24 +130,20 @@ export const IntegrationsSection: FunctionComponent = () => (
             </div>
 
             <div className="flex flex-col">
-                <Heading size="h4" as="h3" className="mb-6 !text-[20px] !font-semibold !leading-7">
-                    All your tools
-                </Heading>
+                <h4 className="mb-6">All your tools</h4>
 
                 <ul className="ml-0 flex list-none flex-wrap gap-2 lg:max-w-md">{renderListItems(tools)}</ul>
-                <Link href="https://docs.sourcegraph.com/integration" target="_blank" className="mt-2">
+                <Link href="https://sourcegraph.com/docs/integration" target="_blank" className="mt-2">
                     <Badge text="See more" size="small" className="w-fit hover:bg-violet-100 hover:text-violet-600" />
                 </Link>
             </div>
 
             <div className="flex flex-col">
-                <Heading size="h4" as="h3" className="mb-6 !text-[20px] !font-semibold !leading-7">
-                    Deployment options
-                </Heading>
+                <h4 className="mb-6">Deployment options</h4>
                 <ul className="ml-0 flex list-none flex-wrap gap-2 lg:max-w-md">
                     {renderListItems(deploymentOptions)}
                 </ul>
-                <Link href="https://docs.sourcegraph.com/admin/install" target="_blank" className="mt-2">
+                <Link href="https://sourcegraph.com/docs/admin/install" target="_blank" className="mt-2">
                     <Badge text="Learn more" size="small" className="w-fit hover:bg-violet-100 hover:text-violet-600" />
                 </Link>
             </div>

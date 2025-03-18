@@ -3,12 +3,12 @@ import { FunctionComponent } from 'react'
 import classNames from 'classnames'
 import OpenInNewIcon from 'mdi-react/OpenInNewIcon'
 
-import { EventName, getEventLogger } from '../hooks/eventLogger'
+import { TelemetryProps } from '../telemetry'
 
 interface Video {
     host?: 'gcp' | 'self'
     source: {
-        webm: string
+        webm?: string
         mp4: string
     }
     loop: boolean
@@ -19,6 +19,7 @@ interface Video {
     controls?: boolean
     autoPlay?: boolean
     className?: string
+    thumbnail?: string
 }
 
 const hosts = {
@@ -26,7 +27,7 @@ const hosts = {
     self: '',
 }
 
-export const Video: FunctionComponent<Video> = ({
+export const Video: FunctionComponent<Video & TelemetryProps> = ({
     host = 'gcp',
     source,
     loop,
@@ -37,6 +38,8 @@ export const Video: FunctionComponent<Video> = ({
     controls = false,
     autoPlay = true,
     className,
+    thumbnail,
+    telemetryRecorder,
 }) => (
     <figure>
         <video
@@ -48,10 +51,11 @@ export const Video: FunctionComponent<Video> = ({
             loop={loop}
             playsInline={true}
             controls={controls}
+            poster={thumbnail}
             title={title}
             // GCS does not set cookies, so we don't want Cookiebot to block this video based on consent
             data-cookieconsent="ignore"
-            onPlay={() => getEventLogger().log(EventName.STATIC_VIDEO_PLAYED, { title }, { title })}
+            onPlay={() => telemetryRecorder?.recordEvent('video', 'play', { privateMetadata: { title } })}
         >
             <source type="video/webm" src={`${hosts[host]}${source.webm}.webm`} data-cookieconsent="ignore" />
             <source type="video/mp4" src={`${hosts[host]}${source.mp4}.mp4`} data-cookieconsent="ignore" />
@@ -61,7 +65,7 @@ export const Video: FunctionComponent<Video> = ({
                 {link ? (
                     <a href={link} className="flex font-normal not-italic">
                         {caption}
-                        {linkIcon && <OpenInNewIcon className="my-auto ml-xxs" size={18} />}
+                        {linkIcon && <OpenInNewIcon className="my-auto ml-2" size={18} />}
                     </a>
                 ) : (
                     caption

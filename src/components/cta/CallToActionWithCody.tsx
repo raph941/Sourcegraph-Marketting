@@ -3,16 +3,18 @@ import { FunctionComponent } from 'react'
 import classNames from 'classnames'
 import Link from 'next/link'
 
-import { buttonLocation } from '../../data/tracking'
-import { Heading } from '../Heading'
+import { GITHUB, GITLAB, GOOGLE } from '../../pages/constants'
+import { TelemetryProps } from '../../telemetry'
 
-import { ExternalsAuth } from './ExternalsAuth'
-import { MeetWithProductExpertButton } from './MeetWithProductExpertButton'
+import { ExternalProvider } from './ExternalProvider'
 
-export const CallToActionWithCody: FunctionComponent<{ className?: string }> = ({ className }) => (
+export const CallToActionWithCody: FunctionComponent<{ className?: string } & TelemetryProps> = ({
+    className,
+    telemetryRecorder,
+}) => (
     <div
         className={classNames(
-            'relative flex max-w-full flex-col overflow-hidden py-[96px] px-sm md:max-h-[384px] md:flex-row md:items-center md:py-[114.5px]',
+            'relative flex max-w-full flex-col overflow-hidden py-[96px] px-6 md:max-h-[384px] md:flex-row md:items-center md:py-[114.5px]',
             className
         )}
     >
@@ -32,30 +34,31 @@ export const CallToActionWithCody: FunctionComponent<{ className?: string }> = (
         />
         <div className="z-10 flex flex-1 flex-col">
             <div className="max-w-[444px] md:self-end">
-                <Heading className="mb-[10px] !text-[36px] text-white" size="h2">
-                    Try Cody for free (beta)
-                </Heading>
+                <h2 className="mb-[10px] text-white">Try Cody for free</h2>
                 <p className="mb-0 text-lg text-gray-200">
                     Cody writes code and answers questions for you, speeding up work and keeping devs in flow.
                 </p>
                 <div className="mt-6 flex flex-wrap gap-2">
-                    <ExternalsAuth
+                    <ExternalProvider
                         className="w-fit flex-1 justify-center !font-normal"
-                        authProvider="github"
+                        providerType={GITHUB}
                         label="GitHub"
                         source="about-home"
+                        telemetryRecorder={telemetryRecorder}
                     />
-                    <ExternalsAuth
+                    <ExternalProvider
                         className="w-fit flex-1 justify-center !font-normal"
-                        authProvider="gitlab"
+                        providerType={GITLAB}
                         label="GitLab"
                         source="about-home"
+                        telemetryRecorder={telemetryRecorder}
                     />
-                    <ExternalsAuth
+                    <ExternalProvider
                         className="w-fit flex-1 justify-center !font-normal"
-                        authProvider="google"
+                        providerType={GOOGLE}
                         label="Google"
                         source="about-home"
+                        telemetryRecorder={telemetryRecorder}
                     />
                 </div>
                 <p className="mt-4 mb-0 text-[14px] text-white opacity-70">
@@ -80,28 +83,19 @@ export const CallToActionWithCody: FunctionComponent<{ className?: string }> = (
         </div>
         <div className="my-[42px] border-b border-gray-400 md:my-0 md:mx-[42px] md:h-[266px] md:border-l" />
         <div className="z-10 flex flex-1 flex-col">
-            <Heading size="h4" className="mb-4 text-white">
-                Cody for Enterprise (beta)
-            </Heading>
+            <h4 className="mb-4 text-white">Cody Enterprise</h4>
             <p className="mb-8 max-w-[444px] text-lg text-gray-200">
-                Cody with Sourcegraph Enterprise uses the code graph to provide context-aware answers based on your own
-                private codebase.
+                Cody Enterprise provides additional security, scalability, and control for your organization. Unlimited
+                usage and context-awareness of your entire codebase.
             </p>
             <div className="flex flex-col sm:flex-row">
                 <Link
-                    href="/cody#contact-form"
-                    title="Get Cody for Enterprise"
+                    href="https://sourcegraph.com/contact/request-info"
+                    title="Get Cody Enterprise"
                     className="hover:bg-color-violet-600 rounded-[5px] border border-white py-2 px-6 text-white"
                 >
-                    Get Cody for Enterprise
+                    Book a demo
                 </Link>
-                <MeetWithProductExpertButton
-                    buttonClassName="text-white pl-0 mt-3 sm:pl-6 sm:mt-0 hover:text-violet-300 hover:underline"
-                    chevron={true}
-                    buttonLocation={buttonLocation.body}
-                >
-                    Speak to an engineer
-                </MeetWithProductExpertButton>
             </div>
         </div>
     </div>
