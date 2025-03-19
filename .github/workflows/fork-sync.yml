@@ -16,19 +16,20 @@ jobs:
           ref: main
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Configure Git
         run: |
           git config --global user.name "Raphael Ehindero"
           git config --global user.email "raph941@gmail.com"
-      
+
       - name: Add upstream remote
         run: |
-          git remote add upstream ${{ github.event.repository.parent.html_url || 'https://github.com/sourcegraph/about.git' }}
+          git remote add upstream ${{ github.event.repository.parent.html_url || 'https://github.com/gitstart/FuzzManager.git' }}
           git fetch upstream
-      
-      - name: Sync fork with upstream
+
+      - name: Sync fork with upstream (fast-forward only)
         run: |
+          # Reset main to match upstream exactly - no merge commits
           git checkout main
-          git merge upstream/main
-          git push origin main
+          git reset --hard upstream/main
+          git push --force origin main
